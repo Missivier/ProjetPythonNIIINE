@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres-container
+    restart: always
+    environment:
+      POSTGRES_DB: odoo
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+
+  odoo:
+    image: odoo:15
+    container_name: odoo-container
+    restart: always
+    ports:
+      - "8069:8069"
+    depends_on:
+      - postgres
+    environment:
+      - PGHOST=postgres
+      - PGUSER=odoo
+      - PGPASSWORD=odoo
+      - PGDATABASE=odoo
+      - ADMIN_PASSWORD=admin
