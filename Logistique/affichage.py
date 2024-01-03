@@ -22,10 +22,10 @@ class ArticlePage:
         self.tree.column("Stock", width=int(100 * 1.5))
  
         # Insertion des données (exemples)
-        self.insert_data("123456", "Veste bouée", 249.90, "50", "veste_bouee.png")
-        self.insert_data("123457", "Veste parachute", 544.90, "50", "veste_parachute.png")
-        self.insert_data("123458", "Veste chauffante", 119.90, "50", "veste_chauffante.png")
-        self.insert_data("123459", "Veste réfrigérée", 129.90, "50", "veste_refrigeree.png")
+        self.insert_data("123456", "Veste bouée", 249.90, "50", "veste bouée.jpg")
+        self.insert_data("123457", "Veste parachute", 544.90, "50", "veste parachute.jpg")
+        self.insert_data("123458", "Veste chauffante", 119.90, "50", "veste chauffante.jpg")
+        self.insert_data("123459", "Veste réfrigérée", 129.90, "50", "veste réfrigérée.jpg")
  
         # Binding de l'événement de clic
         self.tree.bind("<ButtonRelease-1>", self.show_image)
@@ -71,7 +71,7 @@ class ArticlePage:
  
         if image_name:
             # Affichage de l'image dans un Label à l'intérieur de la même fenêtre
-            image_path = f"/home/user/Documents/ProjetPythonNIIINE/photos {image_name}"
+            image_path = {image_name}
             img = tk.PhotoImage(file=image_path)
  
             # Supprimer l'ancien Label s'il existe
@@ -79,10 +79,10 @@ class ArticlePage:
                 if isinstance(widget, tk.Label):
                     widget.destroy()
  
-            # Création d'un widget Label pour afficher l'image
+            # Création d'un widget Label pour afficher l'image à droite
             image_label = tk.Label(self.root, image=img)
             image_label.photo = img
-            image_label.grid(row=2, column=0, padx=10, pady=10, columnspan=5)  # Ajustez la position et la colonne selon vos besoins
+            image_label.grid(row=0, column=1, padx=10, pady=10, rowspan=2, sticky="e")  # Ajustez la position et la colonne selon vos besoins
 
     def validate(self):
         # Ajoutez ici le code pour traiter la validation du nombre d'articles
