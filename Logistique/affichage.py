@@ -49,10 +49,10 @@ class ArticlePage:
  
         # Dictionnaire associant chaque article à son image correspondante
         self.image_dict = {
-            "Veste bouée": "veste bouée.jpg",
-            "Veste parachute": "veste parachute.jpg",
-            "Veste chauffante": "veste chauffante.jpg",
-            "Veste réfrigérée": "veste réfrigérée.jpg",
+            "Veste bouée": "veste_bouee.png",
+            "Veste parachute": "veste_parachute.png",
+            "Veste chauffante": "veste_chauffante.png",
+            "Veste réfrigérée": "veste_refrigeree.png",
         }
 
     def insert_data(self, code, name, price, stock, image):
@@ -71,7 +71,7 @@ class ArticlePage:
  
         if image_name:
             # Affichage de l'image dans un Label à l'intérieur de la même fenêtre
-            image_path = f"/home/user/Documents/ProjetPythonNIIINE/Logistique/ {image_name}"
+            image_path = f"/home/user/Documents/ProjetPythonNIIINE/Logistique/{image_name}"
             img = tk.PhotoImage(file=image_path)
  
             # Supprimer l'ancien Label s'il existe
