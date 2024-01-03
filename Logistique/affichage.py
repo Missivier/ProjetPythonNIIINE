@@ -22,7 +22,7 @@ class ArticlePage:
         self.tree.column("Stock", width=int(100 * 1.5))
  
         # Insertion des données (exemples)
-        self.insert_data("123456", "Veste bouée", 249.90, "50", "veste bouée.jpg")
+        self.insert_data("123456", "Veste bouée", 249.90, "50", "veste_bouee.jpg")
         self.insert_data("123457", "Veste parachute", 544.90, "50", "veste parachute.jpg")
         self.insert_data("123458", "Veste chauffante", 119.90, "50", "veste chauffante.jpg")
         self.insert_data("123459", "Veste réfrigérée", 129.90, "50", "veste réfrigérée.jpg")
@@ -71,7 +71,7 @@ class ArticlePage:
  
         if image_name:
             # Affichage de l'image dans un Label à l'intérieur de la même fenêtre
-            image_path = {image_name}
+            image_path = f"/home/user/Documents/ProjetPythonNIIINE/Logistique/ {image_name}"
             img = tk.PhotoImage(file=image_path)
  
             # Supprimer l'ancien Label s'il existe
