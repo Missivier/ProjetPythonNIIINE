@@ -5,7 +5,7 @@ def login():
     username = entry_username.get()
     password = entry_password.get()
 
-    if username == "utilisateur" and password == "motdepasse":
+    if username == "1" and password == "1":
         hide_login_page()
     else:
         messagebox.showerror("Erreur de connexion", "Nom d'utilisateur ou mot de passe incorrect")
@@ -16,9 +16,12 @@ def hide_login_page():
     # Afficher la page de fond (plage)
     background_frame.place(relwidth=1, relheight=1)
 
+    # Fermer la fenêtre après la connexion réussie
+    root.destroy()
+
 # Création de la fenêtre principale
 root = tk.Tk()
-root.title("Application de Connexion")
+root.title("Application Logistique")
 
 # Configuration de la taille et position de la fenêtre principale
 screen_width = root.winfo_screenwidth()
