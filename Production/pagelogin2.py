@@ -57,11 +57,11 @@ def page_of(root):
     tableau.heading("Validation", text="Validation")
 
     # Insérer des données dans le tableau
-    for i in range(10):  # Par exemple, ajout de 10 lignes de données fictives
+    for i in range(3):  # Par exemple, ajout de 10 lignes de données fictives
 
         tableau.insert("", "end", values=(f"Ligne {i+1} - Colonne 1", f"Ligne {i+1} - Colonne 2", f"Ligne {i+1} - Colonne 3", f"Ligne {i+1} - Colonne 4", f"Ligne {i+1} - Colonne 5", f"Ligne {i+1} - Colonne 6", ""))
-        button_validation = tk.Button(tableau, text=f"Bouton {i+1}")
-        button_validation.place(relx=0.9, rely= i*0.01+0.02, relwidth=0.1, relheight=0.1)
+        button_validation = tk.Button(tableau, text=f"Validé ? {i+1}")
+        button_validation.place(relx=0.855, rely= i*0.03+0.032, relwidth=0.145, relheight=0.03)
 
 
     # Placer le tableau dans la fenêtre principale
@@ -74,6 +74,12 @@ def page_of(root):
     # Ajout d'une barre de titre en haut de la page
     title_frame = tk.Frame(root, bg="#DAD7D7")
     title_frame.place(relx=0.1, rely=0, relwidth=1, relheight=0.1)
+
+    # Positionnement gauchel du label 
+    production_label = tk.Label(title_frame, text="Production", font=("Arial", 16), bg="#DAD7D7")
+    production_label.pack(side="left")
+    #production_label.place(relx=0.4, rely=0.5, anchor="center")  # Centrer horizontalement
+
 
     # Positionnement horizontal du label au centre
     title_label = tk.Label(title_frame, text="Liste des OF", font=("Arial", 16), bg="#DAD7D7")
