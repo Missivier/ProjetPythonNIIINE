@@ -19,8 +19,8 @@ def page_defaut():
     label_production = tk.Label(root, text="Production", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20))
     label_production.place(x=10, y=10)  # Position du libellé en coordonnées x, y
 
-    # Lancement de la boucle principale
-    root.mainloop()
+    # Ajout d'un bouton pour quitter l'application
+    bouton_quit = tk.Button(root, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=root.destroy)
+    bouton_quit.place(relx=1, rely=1, anchor='se')  # Positionne le bouton en bas à droite
 
-# Appel de la fonction pour afficher la page par défaut
-#page_defaut()
+    return root  # Retourne la fenêtre principale
