@@ -36,7 +36,7 @@ class ArticlePage:
 
         # Création du rectangle pour entrer le nombre d'articles
         self.entry_frame = tk.Frame(root)
-        self.entry_label = tk.Label(self.entry_frame, text="Ajustement stock:")
+        self.entry_label = tk.Label(self.entry_frame, text="Nombre d'articles à retirer:")
         self.entry_label.grid(row=0, column=0, padx=5, pady=5)
 
         self.num_articles_entry = tk.Entry(self.entry_frame)
@@ -84,6 +84,9 @@ class ArticlePage:
         self.tree.set(selected_item, "Stock", new_stock)
 
         # Ajoutez ici tout autre traitement nécessaire après la validation
+
+        # Effacer le contenu de la zone de saisie
+        self.num_articles_entry.delete(0, tk.END)
 
     def sort_column(self, col, reverse):
         items = [(self.tree.set(k, col), k) for k in self.tree.get_children("")]

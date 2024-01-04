@@ -1,5 +1,4 @@
 from pagelogin import login
-from affichage import logistique
+from odoo import intregration
 
 login()
-logistique()

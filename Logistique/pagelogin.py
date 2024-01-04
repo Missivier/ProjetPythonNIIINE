@@ -19,6 +19,9 @@ def hide_login_page():
     # Fermer la fenêtre après la connexion réussie
     root.destroy()
 
+def helloworld(self):
+    print("Helloworld")
+
 # Création de la fenêtre principale
 root = tk.Tk()
 root.title("Application Logistique")
