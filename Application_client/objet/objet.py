@@ -1,5 +1,17 @@
+import xmlrpc.client
+
+odoo_ipaddr = "172.31.10.239"
+odoo_port = "8069"
+odoo_url = f'http://{odoo_ipaddr}:{odoo_port}'
+
+db_name = 'db_cybervest'
+username = 'gabin'
+password = 'jslpdl'
+common_proxy = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(odoo_url))
+
+
 class User: 
-    def __init__(self, id, username, password, role) -> None:
+    def __init__(self, id, username, password, role):
         self.id = id
         self.username = username
         self.password = password
@@ -9,7 +21,22 @@ class User:
     def login(self, username, password):
         self.username = username
         self.password = password
-        
+
+    try: 
+        user_odoo = common_proxy.authenticate(db_name,username, password, {})
+        user_info = common_proxy.execute_kw(db_name, user_odoo, password,
+                                                     'res.users', 'read', [user_odoo], {'fields': ['name', 'login', 'groups_id']})
+        if user_odoo:
+            print(f"Utilisateur {username} authentifié avec succès (ID: {user_odoo})")
+            print(user_info) 
+        else:
+            print("Échec de l'authentification. Vérifiez les informations d'identification.")
+                
+
+    except xmlrpc.client.Fault as e:
+        print(f"Erreur XML-RPC: {e.faultCode} - {e.faultString}")
+
+
 
 
 
@@ -35,6 +62,5 @@ class Article:
         self.new_stock = new_stock
 
 
-    def tableaulogistique():
-
+   
         
