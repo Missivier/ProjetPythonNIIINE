@@ -13,21 +13,6 @@ uid = common.authenticate(db_name, username, password, {})
 
 if uid:
     print('Connexion réussie; Utilisateur:', uid)
-<<<<<<< HEAD
-else: 
-    print('Echec de la connexion.')
-
-
-models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_url))
-
-
-partner_ids = models.execute_kw(db_name, uid, password, 'res.partner', 'search', [[]], {})
-partners = models.execute_kw(db_name, uid, password, 'res.partner', 'read', [partner_ids], {'fields': ['name']})
-
-
-print(partners) 
-
-=======
     models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_url))
 
     # Récupération des identifiants des produits
@@ -36,10 +21,10 @@ print(partners)
                                   {'fields': ['name', 'list_price', 'default_code', 'qty_available']})
 
     # Création de listes pour stocker les informations de chaque article
-    noms_articles = []
-    prix_articles = []
-    references_internes = []
-    stocks_disponibles = []
+    nom_article = []
+    prix_article = []
+    reference_interne = []
+    stock_disponible = []
 
     # Stockage des informations dans les listes
     for product in products:
@@ -48,24 +33,23 @@ print(partners)
         reference_interne = product['default_code']
         stock_disponible = product['qty_available']
 
-        noms_articles.append(nom_article)
-        prix_articles.append(prix)
-        references_internes.append(reference_interne)
-        stocks_disponibles.append(stock_disponible)
+        nom_article.append(nom_article)
+        prix_article.append(prix)
+        reference_interne.append(reference_interne)
+        stock_disponible.append(stock_disponible)
 
     # Exemple d'accès aux informations du premier article
     if len(noms_articles) > 0:
-        premier_nom_article = noms_articles[0]
-        premier_prix_article = prix_articles[0]
-        premiere_reference_interne = references_internes[0]
-        premier_stock_disponible = stocks_disponibles[0]
+        premier_nom_article = nom_article[0]
+        premier_prix_article = prix_article[0]
+        premiere_reference_interne = reference_interne[0]
+        premier_stock_disponible = stock_disponible[0]
 
         print("Informations sur le premier article:")
-        print("Nom de l'article:", noms_articles[0])
+        print("Nom de l'article:", nom_article[0])
         print("Prix:", premier_prix_article)
         print("Référence interne:", premiere_reference_interne)
         print("Stock disponible:", premier_stock_disponible)
 
 else:
     print('Échec de la connexion.')
->>>>>>> 23d2ac34a59cbdb4ed46e91ee94203d57f8ddcbd
