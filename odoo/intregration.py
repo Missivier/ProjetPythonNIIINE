@@ -1,77 +1,48 @@
-
 import xmlrpc.client
 
 class ERP: 
     def __init__(self):
-        odoo_ipaddr = "172.31.10.239"
-        odoo_port = "8069"
-        odoo_url = f'http://{odoo_ipaddr}:{odoo_port}'
-        db_name = 'db_cybervest'
-        username = 'enzo'
-        password = 'jslpdl'
+        self.odoo_ipaddr = "172.31.10.239"
+        self.odoo_port = "8069"
+        self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
+        self.db_name = 'db_cybervest'
+        self.username = 'enzo'
+        self.password = 'jslpdl'
+        self.nom_article = []
+        self.prix_article = []
+        self.reference_interne = []
+        self.stock_disponible = []
 
-    def toto(self): 
-        print ("toto")
-
-    def obtenir_informations_produits(odoo_url, db_name, username, password):
-
-        common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(odoo_url))
-        uid = common.authenticate(db_name, username, password, {})
+    def obtenir_informations_produits(self):
+        common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(self.odoo_url))
+        uid = common.authenticate(self.db_name, self.username, self.password, {})
 
         if uid:
-            print('Connexion réussie; Utilisateur:', uid)
-            models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_url))
+            models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(self.odoo_url))
 
             # Récupération des identifiants des produits
-            product_ids = models.execute_kw(db_name, uid, password, 'product.product', 'search', [[]], {})
-            products = models.execute_kw(db_name, uid, password, 'product.product', 'read', [product_ids],
+            product_ids = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'search', [[]], {})
+            products = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'read', [product_ids],
                                         {'fields': ['name', 'list_price', 'default_code', 'qty_available']})
 
-            # Création de listes pour stocker les informations de chaque article
-            nom_article = []
-            prix_article = []
-            reference_interne = []
-            stock_disponible = []
-
-            # Stockage des informations dans les listes
+            # Stockage des informations dans les listes distinctes
             for product in products:
-                nom = product['name']
-                prix = product['list_price']
-                ref_interne = product['default_code']
-                stock = product['qty_available']
-
-                nom_article.append(nom)
-                prix_article.append(prix)
-                reference_interne.append(ref_interne)
-                stock_disponible.append(stock)
-
-            nombre_articles = len(nom_article)
-
-            return nom_article, prix_article, reference_interne, stock_disponible, nombre_articles
+                self.nom_article.append(product['name'])
+                self.prix_article.append(product['list_price'])
+                self.reference_interne.append(product['default_code'])
+                self.stock_disponible.append(product['qty_available'])
 
         else:
             print('Échec de la connexion.')
-            return [], [], [], [], 0
-        
-    def modifier_stock_produit(odoo_url, db_name, username, password, product_id, new_stock):
-        common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(odoo_url))
-        uid = common.authenticate(db_name, username, password, {})
-        if uid:
-            print('Connexion réussie; Utilisateur:', uid)
-            models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_url))
 
-            # Mise à jour du stock du produit
-            product_data = {
-                'qty_available': new_stock,
-            }
-            models.execute_kw(db_name, uid, password, 'product.product', 'write', [[product_id], product_data])
 
-            print("Quantité en stock mise à jour avec succès pour le produit ID:", product_id)
-        else:
-            print('Échec de la connexion.')
+# Utilisation de la classe ERP pour stocker les informations sur les produits dans des variables distinctes au singulier
+if __name__ == "__main__":
+    erp_instance = ERP()
+    erp_instance.obtenir_informations_produits()
 
-#=================================================================================================
-            
-if __name__ =="__main__":
-    erp = ERP()
-    erp.toto()
+    # Utilisation des listes stockées dans la classe ERP
+    print("Nom de l'article:", erp_instance.nom_article[0])
+    print("Prix de l'article:", erp_instance.prix_article[0])
+    print("Référence Interne:", erp_instance.reference_interne[0])
+    print("Stock Disponible:", erp_instance.stock_disponible[0])
