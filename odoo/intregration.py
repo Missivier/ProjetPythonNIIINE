@@ -28,15 +28,19 @@ if uid:
 
     # Stockage des informations dans les listes
     for product in products:
-        nom_article = product['name']
+        nom = product['name']
         prix = product['list_price']
-        reference_interne = product['default_code']
-        stock_disponible = product['qty_available']
+        ref_interne = product['default_code']
+        stock = product['qty_available']
 
-        nom_article.append(nom_article)
+        nom_article.append(nom)
         prix_article.append(prix)
-        reference_interne.append(reference_interne)
-        stock_disponible.append(stock_disponible)
+        reference_interne.append(ref_interne)
+        stock_disponible.append(stock)
+
+    nombre_articles = len(nom_article)
+
+    print("Nombre d'article dans la base de données:", nombre_articles)
 
     # Exemple d'accès aux informations du premier article
     if len(nom_article) > 0:
@@ -46,7 +50,7 @@ if uid:
         premier_stock_disponible = stock_disponible[0]
 
         print("Informations sur le premier article:")
-        print("Nom de l'article:", nom_article[0])
+        print("Nom de l'article:", premier_nom_article)
         print("Prix:", premier_prix_article)
         print("Référence interne:", premiere_reference_interne)
         print("Stock disponible:", premier_stock_disponible)
