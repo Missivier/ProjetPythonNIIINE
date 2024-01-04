@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from odoo import integration
 
 class ArticlePage:
     def __init__(self, root):
@@ -96,6 +97,7 @@ class ArticlePage:
 
         self.tree.heading(col, command=lambda: self.sort_column(col, not reverse))
 
+odoo.
 # Création de la fenêtre principale
 root = tk.Tk()
 
