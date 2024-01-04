@@ -51,3 +51,21 @@ class ERP:
         else:
             print('Échec de la connexion.')
             return [], [], [], [], 0
+        
+
+    def modifier_stock_produit(odoo_url, db_name, username, password, product_id, new_stock):
+        common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(odoo_url))
+        uid = common.authenticate(db_name, username, password, {})
+        if uid:
+            print('Connexion réussie; Utilisateur:', uid)
+            models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_url))
+
+            # Mise à jour du stock du produit
+            product_data = {
+                'qty_available': new_stock,
+            }
+            models.execute_kw(db_name, uid, password, 'product.product', 'write', [[product_id], product_data])
+
+            print("Quantité en stock mise à jour avec succès pour le produit ID:", product_id)
+        else:
+            print('Échec de la connexion.')
