@@ -6,7 +6,12 @@ class User:
         self.role = role
         
 
-    def login
+    def login(self, username, password):
+        self.username = username
+        self.password = password
+        
+
+
 
 
 class Page:
@@ -17,5 +22,19 @@ class Page:
         self.nomdepage = nomdepage
 
     def affichagetableau(self, tableau):
+        self.tableau = tableau
 
-    def 
+    
+
+class Article:
+    def __init__(self, reference, nom, prix, stock, new_stock):
+        self.reference = reference
+        self.nom = nom 
+        self.prix = prix
+        self.stock = stock 
+        self.new_stock = new_stock
+
+
+    def tableaulogistique():
+
+        
