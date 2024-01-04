@@ -8,4 +8,3 @@ from pagelogin import page_login
 root = page_defaut()
 page_login(root)
 root.mainloop()
-
