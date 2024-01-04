@@ -21,10 +21,10 @@ if uid:
                                   {'fields': ['name', 'list_price', 'default_code', 'qty_available']})
 
     # Création de listes pour stocker les informations de chaque article
-    noms_articles = []
-    prix_articles = []
-    references_internes = []
-    stocks_disponibles = []
+    nom_article = []
+    prix_article = []
+    reference_interne = []
+    stock_disponible = []
 
     # Stockage des informations dans les listes
     for product in products:
@@ -33,17 +33,17 @@ if uid:
         reference_interne = product['default_code']
         stock_disponible = product['qty_available']
 
-        noms_articles.append(nom_article)
-        prix_articles.append(prix)
-        references_internes.append(reference_interne)
-        stocks_disponibles.append(stock_disponible)
+        nom_article.append(nom_article)
+        prix_article.append(prix)
+        reference_interne.append(reference_interne)
+        stock_disponible.append(stock_disponible)
 
     # Exemple d'accès aux informations du premier article
-    if len(noms_articles) > 0:
-        premier_nom_article = noms_articles[0]
-        premier_prix_article = prix_articles[0]
-        premiere_reference_interne = references_internes[0]
-        premier_stock_disponible = stocks_disponibles[0]
+    if len(nom_article) > 0:
+        premier_nom_article = nom_article[0]
+        premier_prix_article = prix_article[0]
+        premiere_reference_interne = reference_interne[0]
+        premier_stock_disponible = stock_disponible[0]
 
         print("Informations sur le premier article:")
         print("Nom de l'article:", premier_nom_article)
