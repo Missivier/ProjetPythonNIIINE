@@ -43,4 +43,5 @@ partner_ids = models.execute_kw(db_name, uid, password, 'res.partner', 'search',
 partners = models.execute_kw(db_name, uid, password, 'res.partner', 'read', [partner_ids], {'fields': ['name']})
 
 
-print(partner_ids)
+print(partners) 
+
