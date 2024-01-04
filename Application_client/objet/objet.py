@@ -18,4 +18,12 @@ class Page:
 
     def affichagetableau(self, tableau):
 
-    def 
+    
+
+class Article:
+    def __init__(self, reference, nom, prix, stock, new_stock):
+        self.reference = reference
+        self.nom = nom 
+        self.prix = prix
+        self.stock = stock 
+        self.new_stock = new_stock
