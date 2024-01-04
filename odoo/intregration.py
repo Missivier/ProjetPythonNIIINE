@@ -12,14 +12,3 @@ nom_article, prix_article, reference_interne, stock_disponible, nombre_articles 
     odoo_url, db_name, username, password
 )
 
-# Utilisez les données récupérées comme nécessaire dans votre programme principal
-
-# Par exemple :
-print("Nombre d'articles dans la base de données:", nombre_articles)
-if len(nom_article) > 0:
-    print("Premier nom d'article:", nom_article[0])
-    # ... Autres actions avec les données récupérées ...
-
-
-else:
-    print('Échec de la connexion.')
