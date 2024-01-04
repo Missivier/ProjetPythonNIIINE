@@ -1,5 +1,4 @@
 # main.py
-
 from odoo import intregration
 from tkinter import Tk
 from view import HomeView
@@ -11,8 +10,11 @@ class Appli:
         self.root.title("Mon Application Tkinter")
         HomeView(self.root).pack(expand=True, fill='both')
 
-    
+
 if __name__ == "__main__":
     root = Tk()
     app = Appli(root)
     root.mainloop()
+    erp = intregration.ERP()
+    erp.toto()
+

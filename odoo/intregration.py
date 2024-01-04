@@ -10,7 +10,8 @@ class ERP:
         username = 'enzo'
         password = 'jslpdl'
 
-
+    def toto(self): 
+        print ("toto")
 
     def obtenir_informations_produits(odoo_url, db_name, username, password):
 
@@ -52,7 +53,6 @@ class ERP:
             print('Échec de la connexion.')
             return [], [], [], [], 0
         
-
     def modifier_stock_produit(odoo_url, db_name, username, password, product_id, new_stock):
         common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(odoo_url))
         uid = common.authenticate(db_name, username, password, {})
@@ -69,3 +69,9 @@ class ERP:
             print("Quantité en stock mise à jour avec succès pour le produit ID:", product_id)
         else:
             print('Échec de la connexion.')
+
+#=================================================================================================
+            
+if __name__ =="__main__":
+    erp = ERP()
+    erp.toto()
