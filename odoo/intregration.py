@@ -13,21 +13,6 @@ uid = common.authenticate(db_name, username, password, {})
 
 if uid:
     print('Connexion réussie; Utilisateur:', uid)
-<<<<<<< HEAD
-else: 
-    print('Echec de la connexion.')
-
-
-models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_url))
-
-
-partner_ids = models.execute_kw(db_name, uid, password, 'res.partner', 'search', [[]], {})
-partners = models.execute_kw(db_name, uid, password, 'res.partner', 'read', [partner_ids], {'fields': ['name']})
-
-
-print(partners) 
-
-=======
     models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(odoo_url))
 
     # Récupération des identifiants des produits
@@ -61,11 +46,10 @@ print(partners)
         premier_stock_disponible = stocks_disponibles[0]
 
         print("Informations sur le premier article:")
-        print("Nom de l'article:", noms_articles[0])
+        print("Nom de l'article:", premier_nom_article)
         print("Prix:", premier_prix_article)
         print("Référence interne:", premiere_reference_interne)
         print("Stock disponible:", premier_stock_disponible)
 
 else:
     print('Échec de la connexion.')
->>>>>>> 23d2ac34a59cbdb4ed46e91ee94203d57f8ddcbd
