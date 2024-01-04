@@ -46,7 +46,7 @@ if uid:
         premier_stock_disponible = stock_disponible[0]
 
         print("Informations sur le premier article:")
-        print("Nom de l'article:", premier_nom_article)
+        print("Nom de l'article:", nom_article[0])
         print("Prix:", premier_prix_article)
         print("Référence interne:", premiere_reference_interne)
         print("Stock disponible:", premier_stock_disponible)
