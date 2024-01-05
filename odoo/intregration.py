@@ -15,7 +15,6 @@ class ERP:
 
     def toto(self): 
         print ("toto")
-        
 
     def obtenir_informations_produits(self):
         common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(self.odoo_url))
@@ -40,6 +39,5 @@ class ERP:
             print('Échec de la connexion.')
 
 
-    def ecrire_informations_produits(self):
 
         
