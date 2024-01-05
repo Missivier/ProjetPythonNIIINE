@@ -13,6 +13,10 @@ class ERP:
         self.reference_interne = []
         self.stock_disponible = []
 
+    def toto(self): 
+        print ("toto")
+        
+
     def obtenir_informations_produits(self):
         common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(self.odoo_url))
         uid = common.authenticate(self.db_name, self.username, self.password, {})
