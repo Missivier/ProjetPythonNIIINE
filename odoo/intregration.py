@@ -36,13 +36,6 @@ class ERP:
             print('Échec de la connexion.')
 
 
-# Utilisation de la classe ERP pour stocker les informations sur les produits dans des variables distinctes au singulier
-if __name__ == "__main__":
-    erp_instance = ERP()
-    erp_instance.obtenir_informations_produits()
+    def ecrire_informations_produits(self):
 
-    # Utilisation des listes stockées dans la classe ERP
-    print("Nom de l'article:", erp_instance.nom_article[0])
-    print("Prix de l'article:", erp_instance.prix_article[0])
-    print("Référence Interne:", erp_instance.reference_interne[0])
-    print("Stock Disponible:", erp_instance.stock_disponible[0])
+        
