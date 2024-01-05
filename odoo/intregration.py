@@ -1,5 +1,4 @@
 import xmlrpc.client
-import tkinter as tk
 
 class ERP:
     def __init__(self):
@@ -10,6 +9,8 @@ class ERP:
         self.username = 'enzo'
         self.password = 'jslpdl'
         self.nom_article = []
+        self.prix_article = []
+        self.reference_interne = []
         self.stock_disponible = []
 
     def obtenir_informations_produits(self):
@@ -19,20 +20,18 @@ class ERP:
         if uid:
             models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object')
 
-            quant_ids = models.execute_kw(self.db_name, uid, self.password, 'stock.quant', 'search', [[]], {})
-            quants = models.execute_kw(self.db_name, uid, self.password, 'stock.quant', 'read', [quant_ids],
-                                        {'fields': ['product_id', 'quantity']})
+            product_ids = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'search', [[]], {})
+            products = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'read', [product_ids],
+                                        {'fields': ['name', 'list_price', 'default_code', 'qty_available']})
 
-            for quant in quants:
-                product_id = quant['product_id'][0] if quant['product_id'] else False
-                product = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'read', [product_id],
-                                            {'fields': ['default_code']})
-                default_code = product[0]['default_code'] if product else ""
-                self.nom_article.append(default_code)
-                self.stock_disponible.append(quant['quantity'])
+            for product in products:
+                self.nom_article.append(product['name'])
+                self.prix_article.append(product['list_price'])
+                self.reference_interne.append(product['default_code'])
+                self.stock_disponible.append(product['qty_available'])
 
         else:
-            print('Échec de la connexion.')
+            print('Échec de la connexion à Odoo.')
 
     def modifier_stock_odoo(self, default_code, new_stock):
         common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common')
@@ -67,43 +66,21 @@ class ERP:
         else:
             print('Échec de la connexion à Odoo.')
 
-    def afficher_interface_modification_stock(self):
-        root = tk.Tk()
-        root.title("Modification du Stock")
+    def afficher_variables(self):
+        print("Nom des articles :", self.nom_article)
+        print("Prix des articles :", self.prix_article)
+        print("Référence interne :", self.reference_interne)
+        print("Stock disponible :", self.stock_disponible)
 
-        label_default_code = tk.Label(root, text="Default Code de l'article à modifier :")
-        label_default_code.pack()
+    def main(self):
+        self.obtenir_informations_produits()
+        self.afficher_variables()
+        # Vous pouvez appeler self.modifier_stock_odoo() avec les valeurs nécessaires ici
 
-        default_code_entry = tk.Entry(root)
-        default_code_entry.pack()
-
-        label_new_stock = tk.Label(root, text="Nouveau stock :")
-        label_new_stock.pack()
-
-        new_stock_entry = tk.Entry(root)
-        new_stock_entry.pack()
-
-        def modifier():
-            default_code = default_code_entry.get()
-            new_stock = new_stock_entry.get()
-
-            try:
-                new_stock = int(new_stock)
-                self.modifier_stock_odoo(default_code, new_stock)
-            except ValueError:
-                print("Veuillez entrer une valeur numérique pour le nouveau stock.")
-
-        button = tk.Button(root, text="Modifier", command=modifier)
-        button.pack()
-
-        root.mainloop()
-
-
-def main():
-    erp_instance = ERP()
-    erp_instance.obtenir_informations_produits()
-    erp_instance.afficher_interface_modification_stock()
+    def run(self):
+        self.main()
 
 
 if __name__ == "__main__":
-    main()
+    erp_instance = ERP()
+    erp_instance.run()
