@@ -24,10 +24,10 @@ class HomeView(Frame, ERP):
         self.tree.heading("Stock Disponible", text="Stock Disponible")
  
         # Ajout des colonnes avec une largeur augmentée de 50%
-        self.tree.column("Nom", width=int(150 * 1.5))
-        self.tree.column("Prix", width=int(100 * 1.5))
-        self.tree.column("Référence Interne", width=int(100 * 1.5))
-        self.tree.column("Stock Disponible", width=int(100 * 1.5))
+        self.tree.column("Nom", width=int(150 * 1.5), anchor="center")
+        self.tree.column("Prix", width=int(100 * 1.5), anchor="center")
+        self.tree.column("Référence Interne", width=int(100 * 1.5), anchor="center")
+        self.tree.column("Stock Disponible", width=int(100 * 1.5), anchor="center")
 
         self.tree.pack()
 
@@ -47,5 +47,6 @@ class HomeView(Frame, ERP):
 
         # Ajouter les nouvelles données obtenues à la Treeview
         for i in range(len(self.erp_instance.nom_article)):
+            # Utiliser anchor pour centrer le texte
             self.tree.insert("", "end", values=(self.erp_instance.nom_article[i], self.erp_instance.prix_article[i], 
-                                                self.erp_instance.reference_interne[i], self.erp_instance.stock_disponible[i]))
+                                                self.erp_instance.reference_interne[i], self.erp_instance.stock_disponible[i]),)
