@@ -17,6 +17,6 @@ if __name__ == "__main__":
     root = Tk()
     app = Appli(root)
     root.mainloop()
-    erp = intregration.ERP()
+    erp = ERP()
     erp.toto()
 
