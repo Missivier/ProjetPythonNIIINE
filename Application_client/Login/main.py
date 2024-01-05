@@ -78,10 +78,13 @@ class App(tk.Tk):
         #Création de la page
         self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
 #---------------------------------------------------------------------------------------------------
-        # Page admin
+        # Page logistique
         #Création de la page
         self.page_logis_frame = tk.Frame(self,bg="#DAD7D7")
-
+#---------------------------------------------------------------------------------------------------
+        # Page commerce
+        #Création de la page
+        self.page_commerce_frame = tk.Frame(self,bg="#DAD7D7")
 #---------------------------------------------------------------------------------------------------
         # Bouton déconnection
         self.button_deconnexion = tk.Button(self, text="Déconnexion", command=self.hide_retour_login)
@@ -106,6 +109,11 @@ class App(tk.Tk):
             self.hide_login_page()
             self.show_logis_page()
             self.show_button_deconnexion()
+
+        elif username == "3" and password == "3":
+            self.hide_login_page()
+            self.show_commerce_page()
+            self.show_button_deconnexion()
         else:
             messagebox.showerror("Erreur de connexion", "Nom d'utilisateur ou mot de passe incorrect")
 
@@ -122,9 +130,11 @@ class App(tk.Tk):
     def show_logis_page(self):
         self.page_logis_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
 
+    def show_commerce_page(self):
+        self.page_commerce_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
 
     def show_admin_page(self):
-        self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+        self.page_commerce_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
 
 
     def show_button_deconnexion(self):
@@ -136,6 +146,7 @@ class App(tk.Tk):
         self.page_prod_frame.place_forget()        
         self.page_logis_frame.place_forget()        
         self.page_admin_frame.place_forget()
+        self.page_commerce_frame.place_forget()
         self.hide_button_deconnexion()
         self.show_page_login()
     
