@@ -1,7 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import ttk, Tk, messagebox
 from Style_tableau import style_tableau
+from PIL import Image, ImageDraw, ImageTk
 #---------------------------------------------------------------------------------------------------
 #===================================================================================================
 class App(tk.Tk):
@@ -77,6 +77,15 @@ class App(tk.Tk):
         # Page admin
         #Création de la page
         self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
+        #Creation bouton pour aller page prod
+        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.show_prod_page_admin)
+        self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
+        #Creation bouton pour aller page logistique
+        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.show_logis_page_admin)
+        self.Button_logis.place(relx=0.5, rely=0.5, anchor="center")
+        #Creation bouton pour aller page commerce
+        self.Button_commerce = tk.Button(self.page_admin_frame, text="Commerce",fg="black", bg="#DAD7D7", font=("Arial", 20),command=self.show_commerce_page_admin)
+        self.Button_commerce.place(relx=0.7, rely=0.5, anchor="center")
 #---------------------------------------------------------------------------------------------------
         # Page logistique
         #Création de la page
@@ -88,6 +97,20 @@ class App(tk.Tk):
 #---------------------------------------------------------------------------------------------------
         # Bouton déconnection
         self.button_deconnexion = tk.Button(self, text="Déconnexion", command=self.hide_retour_login)
+#---------------------------------------------------------------------------------------------------
+        # Bouton retour admin
+        #self.button_return = tk.Button(self, text="Déconnexion", command=self.hide_retour_login)  
+        # Création de l'image de la flèche
+        arrow_img = Image.new("RGBA", (16, 16), "white")
+        arrow_draw = ImageDraw.Draw(arrow_img)
+        arrow_draw.polygon([(4, 8), (12, 4), (12, 12)], fill="black")
+
+        # Conversion de l'image en format Tkinter
+        arrow_icon = ImageTk.PhotoImage(arrow_img)
+
+        # Création du bouton avec l'image de la flèche comme icône
+        self.button_return = tk.Button(self, text="Retour", image=arrow_icon, compound="left")
+        self.button_return.pack()    
 
 
 #===================================================================================================
@@ -134,7 +157,7 @@ class App(tk.Tk):
         self.page_commerce_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
 
     def show_admin_page(self):
-        self.page_commerce_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+        self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
 
 
     def show_button_deconnexion(self):
@@ -149,8 +172,20 @@ class App(tk.Tk):
         self.page_commerce_frame.place_forget()
         self.hide_button_deconnexion()
         self.show_page_login()
-    
 
+    def show_prod_page_admin(self):
+        self.page_admin_frame.place_forget()
+        self.show_prod_page()
+
+    def show_logis_page_admin(self):
+        self.page_admin_frame.place_forget()
+        self.show_logis_page()
+
+    def show_commerce_page_admin(self):
+        self.page_admin_frame.place_forget()
+        self.show_commerce_page()
+        
+        
 
 
 
