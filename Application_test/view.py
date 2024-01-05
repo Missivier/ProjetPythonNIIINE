@@ -1,41 +1,51 @@
 from tkinter import Frame, Label, Button, ttk
+import sys
+sys.path.insert(0,'odoo')
+from intregration import ERP
 
 class BaseView(Frame):
     """Classe de base pour les vues."""
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
 
-class HomeView(BaseView):
-    """Vue pour la page d'accueil."""
+class HomeView(Frame, ERP):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         self.label = Label(self, text="Bienvenue sur la page d'accueil !")
         self.label.pack(pady=10)
-        self.button = Button(self, text="Aller à la fonctionnalité", command=self.affichage_tableau)
-        self.button.pack(pady=10)
 
-    def affichage_tableau(self):
         # Création de la grille pour afficher les articles
-        self.tree = ttk.Treeview(self, columns=("Code", "Nom", "Prix", "Stock"), show="headings")
+        self.tree = ttk.Treeview(self, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
  
         # Configuration des en-têtes de colonnes
-        self.tree.heading("Code", text="Code", command=lambda: self.sort_column("Code", False))
-        self.tree.heading("Nom", text="Nom", command=lambda: self.sort_column("Nom", False))
-        self.tree.heading("Prix", text="Prix", command=lambda: self.sort_column("Prix", False))
-        self.tree.heading("Stock", text="Stock", command=lambda: self.sort_column("Stock", False))
+        self.tree.heading("Nom", text="Nom")
+        self.tree.heading("Prix", text="Prix")
+        self.tree.heading("Référence Interne", text="Référence Interne")
+        self.tree.heading("Stock Disponible", text="Stock Disponible")
  
         # Ajout des colonnes avec une largeur augmentée de 50%
-        self.tree.column("Code", width=int(100 * 1.5))
         self.tree.column("Nom", width=int(150 * 1.5))
         self.tree.column("Prix", width=int(100 * 1.5))
-        self.tree.column("Stock", width=int(100 * 1.5))
-
-        # Ajouter des données d'exemple à la Treeview
-        self.tree.insert("", "end", values=("001", "Article 1", "10.00", "50"))
-        self.tree.insert("", "end", values=("002", "Article 2", "15.00", "30"))
+        self.tree.column("Référence Interne", width=int(100 * 1.5))
+        self.tree.column("Stock Disponible", width=int(100 * 1.5))
 
         self.tree.pack()
 
-    def sort_column(self, col, reverse):
-        # Implémenter la logique de tri ici
-        pass
+        # Ajout d'une instance de la classe ERP comme attribut de la classe HomeView
+        self.erp_instance = ERP()
+
+        # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
+        self.affichage_tableau()
+
+    def affichage_tableau(self):
+        # Utiliser l'instance de la classe ERP
+        self.erp_instance.obtenir_informations_produits()
+
+        # Effacer les éléments existants dans la Treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # Ajouter les nouvelles données obtenues à la Treeview
+        for i in range(len(self.erp_instance.nom_article)):
+            self.tree.insert("", "end", values=(self.erp_instance.nom_article[i], self.erp_instance.prix_article[i], 
+                                                self.erp_instance.reference_interne[i], self.erp_instance.stock_disponible[i]))
