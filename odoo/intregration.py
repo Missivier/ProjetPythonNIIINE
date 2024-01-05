@@ -13,6 +13,9 @@ class ERP:
         self.reference_interne = []
         self.stock_disponible = []
 
+    def toto(self): 
+        print ("toto")
+
     def obtenir_informations_produits(self):
         common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(self.odoo_url))
         uid = common.authenticate(self.db_name, self.username, self.password, {})
@@ -36,10 +39,7 @@ class ERP:
             print('Échec de la connexion.')
 
 
-# Utilisation de la classe ERP pour stocker les informations sur les produits dans des variables distinctes au singulier
-if __name__ == "__main__":
-    erp_instance = ERP()
-    erp_instance.obtenir_informations_produits()
+    def ecrire_informations_produits(self):
 
     # Utilisation des listes stockées dans la classe ERP
     print("Nom de l'article:", erp_instance.nom_article[0])
