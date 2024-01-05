@@ -1,5 +1,7 @@
 # main.py
-from odoo import intregration
+import sys
+sys.path.insert(0,'odoo')
+from intregration import ERP
 from tkinter import Tk
 from view import HomeView
 
