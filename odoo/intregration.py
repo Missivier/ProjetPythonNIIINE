@@ -1,7 +1,7 @@
 import xmlrpc.client
 
 class ERP: 
-    def __init__(self):
+    def __init__(self, callback_function = None):
         self.odoo_ipaddr = "172.31.10.239"
         self.odoo_port = "8069"
         self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
@@ -12,6 +12,30 @@ class ERP:
         self.prix_article = []
         self.reference_interne = []
         self.stock_disponible = []
+
+         # Fonction de rappel pour la mise à jour de l'interface utilisateur (Tkinter)
+        self.callback_function = callback_function
+
+    def connect_odoo_signals(self):
+        common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(self.odoo_url))
+        uid = common.authenticate(self.db_name, self.username, self.password, {})
+
+        if uid:
+            models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(self.odoo_url))
+
+            # Connectez-vous au signal 'write' pour détecter les modifications
+            models.execute_kw(self.db_name, uid, self.password, 'product.product', 'write', [[], {'write': True}])
+        else:
+            print('Échec de la connexion.')
+
+    def on_odoo_record_write(self, model, record_id):
+        # Cette fonction sera appelée lorsqu'un enregistrement est modifié dans Odoo
+        # Mettez à jour les informations sur les produits
+        self.obtenir_informations_produits()
+        self.update_table()
+        # Appeler la fonction de rappel pour mettre à jour l'interface utilisateur (Tkinter)
+        if self.callback_function:
+            self.callback_function()
 
     def toto(self): 
         print("toto")
