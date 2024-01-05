@@ -8,6 +8,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
+        #Creation de la page
         self.title("Application CyberVest")
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
@@ -72,11 +73,18 @@ class App(tk.Tk):
         # Ajout Production
         self.production_label = tk.Label(self.page_prod_frame, text="Menu Production", font=("Arial", 16), bg="#DAD7D7")
         self.production_label.place(relx=0.05, rely=0.05, anchor="center")
-
+#---------------------------------------------------------------------------------------------------
+        # Page admin
+        #Création de la page
+        self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
+#---------------------------------------------------------------------------------------------------
+        # Page admin
+        #Création de la page
+        self.page_logis_frame = tk.Frame(self,bg="#DAD7D7")
 
 #---------------------------------------------------------------------------------------------------
         # Bouton déconnection
-        self.button_deconnexion = tk.Button(self, text="Déconnexion", command=self.hide_prod_page)
+        self.button_deconnexion = tk.Button(self, text="Déconnexion", command=self.hide_retour_login)
 
 
 #===================================================================================================
@@ -88,6 +96,16 @@ class App(tk.Tk):
             self.hide_login_page()
             self.show_prod_page()
             self.show_button_deconnexion()
+
+        elif username == "0" and password == "0":
+            self.hide_login_page()
+            self.show_admin_page()
+            self.show_button_deconnexion()
+
+        elif username == "2" and password == "2":
+            self.hide_login_page()
+            self.show_logis_page()
+            self.show_button_deconnexion()
         else:
             messagebox.showerror("Erreur de connexion", "Nom d'utilisateur ou mot de passe incorrect")
 
@@ -95,23 +113,35 @@ class App(tk.Tk):
         self.entry_password.delete(0, tk.END)
         self.entry_username.delete(0, tk.END)
         self.login_frame.place(relx=0.5, rely=0.5, anchor="center")
-
-    def show_prod_page(self):
-        self.page_prod_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
-    
-    def show_button_deconnexion(self):
-        self.button_deconnexion.place(relx=0.92, rely=0.03)
-
-    def hide_button_deconnexion(self):
-        self.button_deconnexion.place_forget()
-
     def hide_login_page(self):
         self.login_frame.place_forget()
 
-    def hide_prod_page(self):
-        self.page_prod_frame.place_forget()
+    def show_prod_page(self):
+        self.page_prod_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+
+    def show_logis_page(self):
+        self.page_logis_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+
+
+    def show_admin_page(self):
+        self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+
+
+    def show_button_deconnexion(self):
+        self.button_deconnexion.place(relx=0.92, rely=0.03)
+    def hide_button_deconnexion(self):
+        self.button_deconnexion.place_forget()
+
+    def hide_retour_login(self):
+        self.page_prod_frame.place_forget()        
+        self.page_logis_frame.place_forget()        
+        self.page_admin_frame.place_forget()
         self.hide_button_deconnexion()
         self.show_page_login()
+    
+
+
+
 
 ################################################################################################
 if __name__=="__main__":
