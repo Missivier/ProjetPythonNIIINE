@@ -14,7 +14,7 @@ class ERP:
         self.stock_disponible = []
 
     def toto(self): 
-        print ("toto")
+        print("toto")
 
     def obtenir_informations_produits(self):
         common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(self.odoo_url))
@@ -38,6 +38,23 @@ class ERP:
         else:
             print('Échec de la connexion.')
 
+    def ecrire_informations_produits(self):
+        if len(self.nom_article) > 0:  # Vérifier si des informations sont disponibles
+            # Utilisation des listes stockées dans la classe ERP
+            print("Nom de l'article:", self.nom_article[0])
+            print("Prix de l'article:", self.prix_article[0])
+            print("Référence Interne:", self.reference_interne[0])
+            print("Stock Disponible:", self.stock_disponible[0])
+        else:
+            print("Aucune information sur les produits disponible.")
 
 
-        
+# Utilisation de la classe ERP pour obtenir et afficher les informations sur les produits
+def main():
+    erp_instance = ERP()
+    erp_instance.obtenir_informations_produits()
+    erp_instance.ecrire_informations_produits()
+
+
+if __name__ == "__main__":
+    main()
