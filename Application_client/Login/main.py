@@ -2,13 +2,17 @@ import tkinter as tk
 from tkinter import ttk, Tk, messagebox
 from Style_tableau import style_tableau
 from PIL import Image, ImageDraw, ImageTk
+
+from Page_init import page_init
+from Page_login import page_login
 #---------------------------------------------------------------------------------------------------
 #===================================================================================================
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-
+        page_init(self)
         #Creation de la page
+        '''
         self.title("Application CyberVest")
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
@@ -20,8 +24,11 @@ class App(tk.Tk):
         # Création d'un bouton pour quitter l'application
         bouton_quit = tk.Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         bouton_quit.place(relx=1, rely=1, anchor='se')  # Positionne le bouton en bas à droite
+        '''
 #---------------------------------------------------------------------------------------------------
         # Création de la frame pour la page login
+        page_login(self)
+        '''
         self.login_frame = tk.Frame(self)
         self.login_frame.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -36,6 +43,7 @@ class App(tk.Tk):
         self.entry_username.grid(row=0, column=1, padx=10, pady=10)
         self.entry_password.grid(row=1, column=1, padx=10, pady=10)
         button_login.grid(row=2, column=1, pady=20)
+        '''
 #---------------------------------------------------------------------------------------------------
         # Page production
         #Création del apage
@@ -99,17 +107,7 @@ class App(tk.Tk):
         self.button_deconnexion = tk.Button(self, text="Déconnexion", command=self.hide_retour_login)
 #---------------------------------------------------------------------------------------------------
         # Bouton retour admin
-        #self.button_return = tk.Button(self, text="Déconnexion", command=self.hide_retour_login)  
-        # Création de l'image de la flèche
-        arrow_img = Image.new("RGBA", (16, 16), "white")
-        arrow_draw = ImageDraw.Draw(arrow_img)
-        arrow_draw.polygon([(4, 8), (12, 4), (12, 12)], fill="black")
-
-        # Conversion de l'image en format Tkinter
-        arrow_icon = ImageTk.PhotoImage(arrow_img)
-
-        # Création du bouton avec l'image de la flèche comme icône
-        self.button_return = tk.Button(self, text="Retour", image=arrow_icon, compound="left")
+        self.button_return = tk.Button(self, text="Retour")
         self.button_return.pack()    
 
 
