@@ -37,7 +37,7 @@ class App(tk.Tk):
         self.button_deconnexion = tk.Button(self, text="Déconnexion", command=self.hide_retour_login)
 #---------------------------------------------------------------------------------------------------
         # Bouton retour admin
-        self.button_return = tk.Button(self, text="Retour")
+        self.button_return = tk.Button(self, text="Retour", command=self.show_admin_page)
            
 
 #===================================================================================================
@@ -67,14 +67,12 @@ class App(tk.Tk):
             self.show_button_deconnexion()
         else:
             messagebox.showerror("Erreur de connexion", "Nom d'utilisateur ou mot de passe incorrect")
-
     def show_page_login(self):
         self.entry_password.delete(0, tk.END)
         self.entry_username.delete(0, tk.END)
         self.login_frame.place(relx=0.5, rely=0.5, anchor="center")
     def hide_login_page(self):
         self.login_frame.place_forget()
-
     def hide_retour_login(self):
         self.page_prod_frame.place_forget()        
         self.page_logis_frame.place_forget()        
@@ -83,27 +81,27 @@ class App(tk.Tk):
         self.hide_button_return()
         self.hide_button_deconnexion()
         self.show_page_login()
-
 #---------------------------------------------------------------------------------------------------
 # Fonction page production
-
     def show_prod_page(self):
         self.page_prod_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
-
 #---------------------------------------------------------------------------------------------------
 #Fonction page logistique
     def show_logis_page(self):
         self.page_logis_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
-
 #---------------------------------------------------------------------------------------------------
 #Fonction page commerce
     def show_commerce_page(self):
         self.page_commerce_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
-
 #---------------------------------------------------------------------------------------------------
 #Fonction page admin
     def show_admin_page(self):
         self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+        self.page_prod_frame.place_forget()        
+        self.page_logis_frame.place_forget()
+        self.page_commerce_frame.place_forget()
+        self.button_return.place_forget()
+        
 
     def show_prod_page_admin(self):
         self.page_admin_frame.place_forget()
@@ -132,7 +130,36 @@ class App(tk.Tk):
     def hide_button_deconnexion(self):
         self.button_deconnexion.place_forget()
     
-
+def show_image(self, event):
+         # Vérifier s'il y a une sélection dans le Treeview
+        if not self.tree.selection():
+            return
+        # Récupération de la ligne sélectionnée
+        item = self.tree.selection()[0]
+ 
+        # Récupération du nom de l'article associé à la ligne sélectionnée
+        article_name = self.tree.item(item, "values")[1]
+ 
+        # Récupération du nom de l'image associée à l'article
+        image_name = self.image_dict.get(article_name, "")
+ 
+        if image_name:
+            # Affichage de l'image dans un Label à l'intérieur de la même fenêtre
+            image_path = f"/home/user/Documents/ProjetPythonNIIINE/Login/{image_name}"
+            img = tk.PhotoImage(file=image_path)
+ 
+            # Supprimer l'ancien Label s'il existe
+            for widget in self.root.grid_slaves():
+                if isinstance(widget, tk.Label):
+                    widget.destroy()
+ 
+            # Création d'un widget Label pour afficher l'image à droite
+            image_label = tk.Label(self.page_logis_frame, image=img)
+            image_label.photo = img
+            image_label.grid(row=0, column=5, padx=0, pady=0, rowspan=100, sticky="n")  # Ajustez la position et la colonne selon vos besoins
+ 
+        else:
+                print("Image introuvable pour cet article.")
 ################################################################################################
 if __name__=="__main__":
     myApp = App()
