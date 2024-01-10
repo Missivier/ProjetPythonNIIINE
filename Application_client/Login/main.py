@@ -1,12 +1,12 @@
 import tkinter as tk
-from tkinter import ttk, Tk, messagebox
+from tkinter import messagebox
 
 
 from Page_init import page_init
 from Page_Login import page_login
 from Page_Prod import page_prod
 from Page_Admin import page_admin
-from Page_Logistique import page_logistique, show_image
+from Page_Logistique import page_logistique
 from Page_Commerce import page_commerce
 
 #---------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ class App(tk.Tk):
         page_admin(self)
 #---------------------------------------------------------------------------------------------------
         # Page logistique
-        page_logistique(self,show_image)
+        page_logistique(self,show_image,edit_stock)
 #---------------------------------------------------------------------------------------------------
         # Page commerce
         page_commerce(self)
@@ -130,7 +130,79 @@ class App(tk.Tk):
         self.button_deconnexion.place(relx=0.92, rely=0.03)
     def hide_button_deconnexion(self):
         self.button_deconnexion.place_forget()
-    
+
+
+def show_image(self, event):
+        selection = self.table.selection()
+        if selection:
+            item = self.table.item(selection[0])
+            image_name = item['values'][4]
+            try:
+                image_path = f"/home/user/Documents/ProjetPythonNIIINE/Application_client/Image/{image_name}"  # Modifier le chemin vers votre dossier
+                img = tk.PhotoImage(file=image_path)
+                self.image_label.config(image=img)
+                self.image_label.image = img
+            except tk.TclError:
+                # Gérer une éventuelle erreur si le chemin est incorrect ou si le fichier image est corrompu
+                print("Erreur lors du chargement de l'image")
+
+def edit_stock(self, event):
+        col = self.table.identify_column(event.x)
+        row = self.table.identify_row(event.y)
+
+        if col == '#4':  # Vérification de la colonne Stock (colonne n°4)
+            item = self.table.item(row)
+            current_stock = item['values'][3]
+
+            new_stock = self.create_stock_dialog(current_stock)
+
+            if new_stock is not None:
+                index = self.table.index(row)
+                self.data[index] = (
+                    item['values'][0],
+                    item['values'][1],
+                    item['values'][2],
+                    new_stock,
+                    item['values'][4]
+                )
+
+                for row in self.table.get_children():
+                    self.table.delete(row)
+
+                for data_row in self.data:
+                    self.table.insert("", "end", values=data_row)
+
+def create_stock_dialog(self, current_stock):
+        stock_dialog = tk.Toplevel(self)
+        stock_dialog.title("Modifier le stock")
+        stock_dialog.geometry("300x100")
+
+        new_stock = tk.StringVar(value=current_stock)
+        entry = tk.Entry(stock_dialog, textvariable=new_stock)
+        entry.pack(padx=20, pady=10)
+
+        button_ok = tk.Button(stock_dialog, text="Valider", command=lambda: stock_dialog.destroy())
+        button_ok.pack(pady=5)
+
+        stock_dialog.transient(self)
+        stock_dialog.grab_set()
+
+        self.wait_window(stock_dialog)
+        return new_stock.get() 
+
+def sort_column(self, col, reverse):
+        # Trier la colonne
+        items = [(self.table.set(k, col), k) for k in self.table.get_children("")]
+        items.sort(reverse=reverse)
+ 
+        # Réorganiser les éléments dans le Treeview
+        for index, (val, k) in enumerate(items):
+            self.table.move(k, "", index)
+ 
+        # Mettre à jour l'ordre de tri pour la colonne suivante
+        self.table.heading(col, command=lambda: self.sort_column(col, not reverse))
+
+
 
 ################################################################################################
 if __name__=="__main__":
