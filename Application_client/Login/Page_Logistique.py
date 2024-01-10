@@ -32,7 +32,7 @@ def page_logistique(self,show_image):
             self.tree.insert("", "end", values=item)
 
         # Binding de l'événement de clic
-        self.tree.bind("<ButtonRelease-1>", self.show_image)
+        self.tree.bind("<ButtonRelease-1>", show_image)
  
         # Placement du Treeview
         self.tree.grid(row=0, column=0, padx=10, pady=10, columnspan=5)
@@ -46,7 +46,7 @@ def page_logistique(self,show_image):
         self.num_articles_entry.grid(row=0, column=1, padx=5, pady=5)
  
         # Création du bouton Valider
-        self.validate_button = tk.Button(self.page_logis_frame.entry_frame, text="Valider", command=self.validate)
+        self.validate_button = tk.Button(self.entry_frame, text="Valider", command=validate)
         self.validate_button.grid(row=0, column=2, padx=5, pady=5, sticky="e")
  
         self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
@@ -59,13 +59,42 @@ def page_logistique(self,show_image):
             "Veste réfrigérée": "veste_refrigeree.png",
         }
 
-
+def show_image(self):
+         # Vérifier s'il y a une sélection dans le Treeview
+        if not self.tree.selection():
+            return
+        # Récupération de la ligne sélectionnée
+        item = self.tree.selection()[0]
+ 
+        # Récupération du nom de l'article associé à la ligne sélectionnée
+        article_name = self.tree.item(item, "values")[1]
+ 
+        # Récupération du nom de l'image associée à l'article
+        image_name = self.image_dict.get(article_name, "")
+ 
+        if image_name:
+            # Affichage de l'image dans un Label à l'intérieur de la même fenêtre
+            image_path = f"/home/user/Documents/ProjetPythonNIIINE/Login/{image_name}"
+            img = tk.PhotoImage(file=image_path)
+ 
+            # Supprimer l'ancien Label s'il existe
+            for widget in self.grid_slaves():
+                if isinstance(widget, tk.Label):
+                    widget.destroy()
+ 
+            # Création d'un widget Label pour afficher l'image à droite
+            image_label = tk.Label(self.page_logis_frame, image=img)
+            image_label.photo = img
+            image_label.grid(row=0, column=5, padx=0, pady=0, rowspan=100, sticky="n")  # Ajustez la position et la colonne selon vos besoins
+ 
+        else:
+                print("Image introuvable pour cet article.")
 
 def insert_data(self, code, name, price, stock, image):
         # Insertion des données dans le Treeview
         self.tree.insert("", tk.END, values=(code, name, price, stock, image))
  
-def validate(self):
+def validate():
         # Ajoutez ici le code pour traiter la validation du nombre d'articles
         # par exemple, récupérez la valeur de self.num_articles_entry.get()
         pass
@@ -81,4 +110,6 @@ def sort_column(self, col, reverse):
  
         # Mettre à jour l'ordre de tri pour la colonne suivante
         self.tree.heading(col, command=lambda: self.sort_column(col, not reverse))
- 
+
+
+######################################################################
