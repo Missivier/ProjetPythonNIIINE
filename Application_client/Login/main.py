@@ -133,7 +133,7 @@ class App(tk.Tk):
 
 
     def show_image(self, event):
-        selection = self.table.selection()
+        selection = self.table.selection(event)
         if selection:
             item = self.table.item(selection[0])
             image_name = item['values'][4]
