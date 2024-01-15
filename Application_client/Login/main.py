@@ -1,3 +1,7 @@
+import sys
+sys.path.insert(0,'odoo')
+from intregration import ERP
+
 import tkinter as tk
 from tkinter import messagebox
 
