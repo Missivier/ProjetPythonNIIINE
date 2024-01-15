@@ -1,4 +1,5 @@
 import xmlrpc.client
+from datetime import datetime, timedelta
 
 class ERP:
     def __init__(self, db_name=None, username=None, password=None):
@@ -17,27 +18,15 @@ class ERP:
         self.uid = 0
         self.images_stock = []
 
-    def connexion(self):
-         uid = self.common.authenticate(self.db_name, self.username, self.password, {})
-         if uid:
-            print('Connexion réussie. UID utilisateur:', uid)
-         else:
-            print('Échec de la connexion.')
-         return uid
-
     def obtenir_informations_produits(self):
-         if self.uid:
-            product_ids = self.models.execute_kw(
-                self.db_name, self.uid, self.password,
-                'product.product', 'search', [[]], {}
-            )
-            products = self.models.execute_kw(
-                self.db_name, self.uid, self.password,
-                'product.product', 'read', [product_ids],
-                {'fields': ['name', 'list_price', 'default_code', 'qty_available']}
-            )
-            product_ids = self.models.execute_kw(self.db_name, uid, self.password, 'product.product', 'search', [[]], {})
-            products = self.models.execute_kw(self.db_name, uid, self.password, 'product.product', 'read', [product_ids],
+        common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common')
+        uid = common.authenticate(self.db_name, self.username, self.password, {})
+
+        if uid:
+            models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object')
+
+            product_ids = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'search', [[]], {})
+            products = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'read', [product_ids],
                                         {'fields': ['name', 'list_price', 'default_code', 'qty_available', 'image_1920']})
 
             for product in products:
@@ -47,8 +36,9 @@ class ERP:
                 self.stock_disponible.append(product['qty_available'])
                 self.images_stock.append(product['image_1920'])
 
-         else:
+        else:
             print('Échec de la connexion à Odoo.')
+
 
     def modifier_stock_odoo(self, default_code, new_stock):
         if self.uid:
@@ -87,6 +77,7 @@ class ERP:
         if self.stock_disponible:
             print("Stock disponible :", self.stock_disponible[0])
 
+
     def main(self):
         self.connexion()
         self.obtenir_informations_produits()
@@ -95,7 +86,6 @@ class ERP:
 
     def run(self):
         self.main()
-
 
 if __name__ == "__main__":
     erp_instance = ERP()
