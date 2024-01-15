@@ -3,6 +3,7 @@ sys.path.insert(0,'odoo')
 from intregration import ERP
 
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox
+import tkinter as tk
 from view import HomeView
 
 class Application(Tk):
@@ -27,20 +28,25 @@ class Application(Tk):
 
         self.login_page()
 
+    #Création de la page login
     def login_page(self):
-        self.username_label = Label(self, text="Nom d'utilisateur:")
-        self.entry_username = Entry(self)
-
-        self.password_label = Label(self, text="Mot de passe:")
-        self.entry_password = Entry(self, show="*")
-
-        self.login_button = Button(self, text="Connexion", command = self.login())
-
-        self.username_label.pack(pady=10)
-        self.entry_username.pack(pady=5)
-        self.password_label.pack(pady=10)
-        self.entry_password.pack(pady=5)
-        self.login_button.pack(pady=20)
+     # Création de la frame pour la page login
+        self.login_frame = Frame(self)
+        self.login_frame.place(relx=0.5, rely=0.5, anchor="center")
+ 
+        label_username = Label(self.login_frame, text="Nom d'utilisateur:")
+        label_password = Label(self.login_frame, text="Mot de passe:")
+ 
+        self.entry_username = Entry(self.login_frame)
+        self.entry_password = Entry(self.login_frame, show="*")
+        button_login = Button(self.login_frame, text="Connexion", command=self.login)
+ 
+        label_username.grid(row=0, column=0, padx=10, pady=10, sticky=tk.E)
+        label_password.grid(row=1, column=0, padx=10, pady=10, sticky=tk.E)
+ 
+        self.entry_username.grid(row=0, column=1, padx=10, pady=10)
+        self.entry_password.grid(row=1, column=1, padx=10, pady=10)
+        button_login.grid(row=2, column=1, pady=20)
 
     def login(self):
         self.erp.connexion()
@@ -48,9 +54,9 @@ class Application(Tk):
     def show_page(self, page_class):
         # Supprime les widgets de la page de connexion
         self.username_label.destroy()
-        self.username_entry.destroy()
+        self.entry_username.destroy()
         self.password_label.destroy()
-        self.password_entry.destroy()
+        self.entry_password.destroy()
         self.login_button.destroy()
 
         # Supprime le bouton Quitter
