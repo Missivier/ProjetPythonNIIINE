@@ -3,6 +3,7 @@ sys.path.insert(0,'odoo')
 from intregration import ERP
 
 from tkinter import Tk, Label, Entry, Button, Frame
+import tkinter as tk
 from tkinter import messagebox
 from view import HomeView
 from Production import ProductionPage
