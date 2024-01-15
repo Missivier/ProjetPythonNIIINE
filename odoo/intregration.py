@@ -107,6 +107,7 @@ class ERP:
         else:
             print('Échec de la connexion à Odoo.')
 
+<<<<<<< HEAD
     def modifier_quantite_en_cours_production(self, ordre_fabrication, new_qty_producing):
         if self.uid:
             mo_id = self.models.execute_kw(
@@ -143,10 +144,19 @@ class ERP:
         self.modifier_quantite_en_cours_production()
         self.modifier_stock_odoo()
         self.obtenir_informations_ordres_fabrication()
+=======
+   
+    def main(self):
+        self.connexion()
+        self.obtenir_informations_produits()
+        self.obtenir_informations_ordres_fabrication()
+        
+>>>>>>> f70424dbcfd7828e2809e49fced72745ab248805
 
         # Obtention des informations des ordres de fabrication
         ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
 
+<<<<<<< HEAD
         # Vous pouvez utiliser ces valeurs comme nécessaire
         print("Ordres de fabrication :", ordres)
         print("Dates des ordres de fabrication :", dates)
@@ -161,3 +171,9 @@ class ERP:
 if __name__ == "__main__":
     erp_instance = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
     erp_instance.run()
+=======
+        # Vous pouvez appeler self.modifier_stock_odoo() avec les valeurs nécessaires ici
+
+    def run(self):
+        self.main()
+>>>>>>> f70424dbcfd7828e2809e49fced72745ab248805
