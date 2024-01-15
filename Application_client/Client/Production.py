@@ -48,17 +48,17 @@ class ProductionPage(Frame):
 
     def affichage_tableau(self):
         # Utiliser l'instance de la classe ERP
-        self.erp_instance.obtenir_informations_produits()
+        self.erp_instance.obtenir_informations_ordres_fabrication()
 
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
 
         # Ajouter les nouvelles données obtenues à la Treeview
-        for i in range(len(self.erp_instance.nom_article)):
+        for i in range(len(self.erp_instance.ordres)):
             # Utiliser anchor pour centrer le texte
-            self.tree.insert("", "end", values=(self.erp_instance.nom_article[i], self.erp_instance.prix_article[i], 
-                                                self.erp_instance.reference_interne[i], self.erp_instance.stock_disponible[i]))
+            self.tree.insert("", "end", values=(self.erp_instance.ordres[i], self.erp_instance.date[i], 
+                                                self.erp_instance.quantites[i], self.erp_instance.qty_producing[i]))
 
     def update_table(self):
         # Effacer les éléments existants dans la Treeview
@@ -66,7 +66,7 @@ class ProductionPage(Frame):
             self.tree.delete(item)
 
         # Ajouter les nouvelles données obtenues à la Treeview après mise à jour
-        for i in range(len(self.erp_instance.nom_article)):
+        for i in range(len(self.erp_instance.ordres)):
             self.tree.insert("", "end", values=(self.erp_instance.ordres[i], self.erp_instance.date[i], 
                                                 self.erp_instance.quantites[i], self.erp_instance.qty_producing[i]))
 
