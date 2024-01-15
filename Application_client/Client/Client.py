@@ -5,6 +5,7 @@ from intregration import ERP
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox
 import tkinter as tk
 from view import HomeView
+from Production import ProductionPage
 
 class Application(Tk):
     def __init__(self):
@@ -56,14 +57,17 @@ class Application(Tk):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
         erp = ERP("db_cybervest", self.entry_username.get(), self.entry_password.get())
         erp.connexion()
+        erp.uid
+
+        if erp.uid == 2:
+            self.show_page(ProductionPage)
+        else:
+            ProductionPage()
 
     def show_page(self, page_class):
         # Supprime les widgets de la page de connexion
-        self.username_label.destroy()
-        self.entry_username.destroy()
-        self.password_label.destroy()
-        self.entry_password.destroy()
-        self.login_button.destroy()
+        self.login_frame.destroy()
+
 
         # Supprime le bouton Quitter
         self.bouton_quit.destroy()
