@@ -1,11 +1,11 @@
 import xmlrpc.client
 
 class ERP:
-    def __init__(self, db, username, password):
+    def __init__(self, db_name=None, username=None, password=None):
         self.odoo_ipaddr = "172.31.11.2"
         self.odoo_port = "8069"
         self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
-        self.db_name = db
+        self.db_name =  db_name
         self.username = username
         self.password = password
         self.nom_article = []
@@ -14,7 +14,8 @@ class ERP:
         self.stock_disponible = []
         self.common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common')
         self.models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object')
-        self.uid = self.connexion()
+        self.uid = 0
+        self.images_stock = []
 
     def connexion(self):
          uid = self.common.authenticate(self.db_name, self.username, self.password, {})
@@ -35,12 +36,17 @@ class ERP:
                 'product.product', 'read', [product_ids],
                 {'fields': ['name', 'list_price', 'default_code', 'qty_available']}
             )
+            product_ids = self.models.execute_kw(self.db_name, uid, self.password, 'product.product', 'search', [[]], {})
+            products = self.models.execute_kw(self.db_name, uid, self.password, 'product.product', 'read', [product_ids],
+                                        {'fields': ['name', 'list_price', 'default_code', 'qty_available', 'image_1920']})
 
             for product in products:
                 self.nom_article.append(product['name'])
                 self.prix_article.append(product['list_price'])
                 self.reference_interne.append(product['default_code'])
                 self.stock_disponible.append(product['qty_available'])
+                self.images_stock.append(product['image_1920'])
+
          else:
             print('Échec de la connexion à Odoo.')
 
