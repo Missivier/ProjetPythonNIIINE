@@ -18,6 +18,10 @@ from Page_Commerce import page_commerce
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+
+         # Créer les variables d'entrée
+        self.entry_username = tk.StringVar()
+        self.entry_password = tk.StringVar()
         
 
         #Creation de la page
@@ -43,35 +47,15 @@ class App(tk.Tk):
 #---------------------------------------------------------------------------------------------------
         # Bouton retour admin
         self.button_return = tk.Button(self, text="Retour", command=self.show_admin_page)
+
+
+        # Instance classe ERP
+        self.erp = ERP("db_cybervest", self.entry_username.get(), self.entry_password.get())
            
 
 #===================================================================================================
 # Fonction du login
-    def login(self):
-        username = self.entry_username.get()
-        password = self.entry_password.get()
 
-        if username == "1" and password == "1":
-            self.hide_login_page()
-            self.show_prod_page()
-            self.show_button_deconnexion()
-
-        elif username == "0" and password == "0":
-            self.hide_login_page()
-            self.show_admin_page()
-            self.show_button_deconnexion()
-
-        elif username == "2" and password == "2":
-            self.hide_login_page()
-            self.show_logis_page()
-            self.show_button_deconnexion()
-
-        elif username == "3" and password == "3":
-            self.hide_login_page()
-            self.show_commerce_page()
-            self.show_button_deconnexion()
-        else:
-            messagebox.showerror("Erreur de connexion", "Nom d'utilisateur ou mot de passe incorrect")
     def show_page_login(self):
         self.entry_password.delete(0, tk.END)
         self.entry_username.delete(0, tk.END)
@@ -211,5 +195,6 @@ def sort_column(self, col, reverse):
 ################################################################################################
 if __name__=="__main__":
     myApp = App()
+    erp = ERP()
     myApp.mainloop()
 

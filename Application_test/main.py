@@ -19,7 +19,6 @@ class Appli:
         
 if __name__ == "__main__":
     erp = ERP()
-    erp.toto()
     root = Tk()
     app = Appli(root)
     root.mainloop()
