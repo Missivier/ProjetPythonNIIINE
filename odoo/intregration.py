@@ -18,10 +18,11 @@ class ERP:
         self.models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object', allow_none=True)
         self.uid = 0
         self.images_stock = []
-        self.ordres_fabrication = []
-        self.dates_ordres_fabrication = []
-        self.quantite_a_produire = []
-        self.qty_producing = []
+        self.ordres_fabrication = []  # Déclarées ici une seule fois
+        self.dates_ordres_fabrication = []  # Déclarées ici une seule fois
+        self.quantite_a_produire = []  # Déclarées ici une seule fois
+        self.qty_producing = []  # Déclarées ici une seule fois
+
 
     def connexion(self):
         self.uid = self.common.authenticate(self.db_name, self.username, self.password, {})
@@ -53,11 +54,6 @@ class ERP:
             print('Échec de la connexion à Odoo.')
 
     def obtenir_informations_ordres_fabrication(self):
-        ordres_fabrication = []
-        dates_ordres_fabrication = []
-        quantite_a_produire = []
-        qty_producing = []
-
         if self.uid:
             mo_ids = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
@@ -71,14 +67,15 @@ class ERP:
             )
 
             for mo in mos:
-                ordres_fabrication.append(mo['name'])
-                dates_ordres_fabrication.append(mo['date_planned_start'])
-                quantite_a_produire.append(mo['product_qty'])
-                qty_producing.append(mo['qty_producing'])
+                self.ordres_fabrication.append(mo['name'])  # Utilisez self. pour qualifier la liste
+                self.dates_ordres_fabrication.append(mo['date_planned_start'])
+                self.quantite_a_produire.append(mo['product_qty'])
+                self.qty_producing.append(mo['qty_producing'])
         else:
             print('Échec de la connexion à Odoo.')
 
-        return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
+        return self.ordres_fabrication, self.dates_ordres_fabrication, self.quantite_a_produire, self.qty_producing
+
     
     def modifier_stock_odoo(self, default_code, new_stock):
         if self.uid:
@@ -150,6 +147,3 @@ class ERP:
         print("Quantités à produire :", quantites)
         print("Quantités en cours de production :", qty_producing)
 
-if __name__ == "__main__":
-    erp_instance = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
-    erp_instance.run()
