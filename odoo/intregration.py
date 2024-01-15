@@ -140,5 +140,5 @@ class ERP:
         self.main()
 
 if __name__ == "__main__":
-    erp_instance = ERP(db_name='db_cybervest', username='alexandre', password='jslpdl')
+    erp_instance = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
     erp_instance.run()
