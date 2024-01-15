@@ -107,58 +107,17 @@ class ERP:
         else:
             print('Échec de la connexion à Odoo.')
 
-    def modifier_quantite_en_cours_production(self, ordre_fabrication, new_qty_producing):
-        if self.uid:
-            mo_id = self.models.execute_kw(
-                self.db_name, self.uid, self.password,
-                'mrp.production', 'search',
-                [[['name', '=', ordre_fabrication]]]
-            )
-            if mo_id:
-                self.models.execute_kw(
-                    self.db_name, self.uid, self.password,
-                    'mrp.production', 'write',
-                    [mo_id, {'qty_producing': new_qty_producing}]
-                )
-                print(f"Quantité en cours de production mise à jour avec succès pour l'ordre de fabrication '{ordre_fabrication}'.")
-            else:
-                print(f"L'ordre de fabrication '{ordre_fabrication}' n'a pas été trouvé.")
-        else:
-            print('Échec de la connexion à Odoo.')
-
-    def afficher_variables(self):
-        if self.nom_article:
-            print("Nom des articles :", self.nom_article[0])
-        if self.prix_article:
-            print("Prix des articles :", self.prix_article[0])
-        if self.reference_interne:
-            print("Référence interne :", self.reference_interne[0])
-        if self.stock_disponible:
-            print("Stock disponible :", self.stock_disponible[0])
-
+   
     def main(self):
         self.connexion()
         self.obtenir_informations_produits()
-        self.afficher_variables()
-        self.modifier_quantite_en_cours_production()
-        self.modifier_stock_odoo()
         self.obtenir_informations_ordres_fabrication()
+        
 
         # Obtention des informations des ordres de fabrication
         ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
 
-        # Vous pouvez utiliser ces valeurs comme nécessaire
-        print("Ordres de fabrication :", ordres)
-        print("Dates des ordres de fabrication :", dates)
-        print("Quantités à produire :", quantites)
-        print("Quantités en cours de production :", qty_producing)
-
-       
+        # Vous pouvez appeler self.modifier_stock_odoo() avec les valeurs nécessaires ici
 
     def run(self):
         self.main()
-
-if __name__ == "__main__":
-    erp_instance = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
-    erp_instance.run()
-
