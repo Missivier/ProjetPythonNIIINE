@@ -12,6 +12,7 @@ class ERP:
         self.prix_article = []
         self.reference_interne = []
         self.stock_disponible = []
+        self.images_stock = []
 
     def obtenir_informations_produits(self):
         common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common')
@@ -22,13 +23,14 @@ class ERP:
 
             product_ids = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'search', [[]], {})
             products = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'read', [product_ids],
-                                        {'fields': ['name', 'list_price', 'default_code', 'qty_available']})
+                                        {'fields': ['name', 'list_price', 'default_code', 'qty_available', 'image_1920']})
 
             for product in products:
                 self.nom_article.append(product['name'])
                 self.prix_article.append(product['list_price'])
                 self.reference_interne.append(product['default_code'])
                 self.stock_disponible.append(product['qty_available'])
+                self.images_stock.append(product['image_1920'])
 
         else:
             print('Échec de la connexion à Odoo.')
