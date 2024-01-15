@@ -80,7 +80,7 @@ class ERP:
 
         return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
     
-def modifier_stock_odoo(self, default_code, new_stock):
+    def modifier_stock_odoo(self, default_code, new_stock):
         if self.uid:
             product_id = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
@@ -107,7 +107,7 @@ def modifier_stock_odoo(self, default_code, new_stock):
         else:
             print('Échec de la connexion à Odoo.')
 
-def afficher_variables(self):
+    def afficher_variables(self):
         if self.nom_article:
             print("Nom des articles :", self.nom_article[0])
         if self.prix_article:
@@ -117,10 +117,13 @@ def afficher_variables(self):
         if self.stock_disponible:
             print("Stock disponible :", self.stock_disponible[0])
 
-def main(self):
+    def main(self):
         self.connexion()
         self.obtenir_informations_produits()
         self.afficher_variables()
+        self.modifier_stock_odoo()
+        self.obtenir_informations_ordres_fabrication()
+
 
         # Obtention des informations des ordres de fabrication
         ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
@@ -133,7 +136,7 @@ def main(self):
 
         # Vous pouvez appeler self.modifier_stock_odoo() avec les valeurs nécessaires ici
 
-def run(self):
+    def run(self):
         self.main()
 
 if __name__ == "__main__":
