@@ -25,22 +25,6 @@ class Application(Tk):
         self.login_page()
 #-----------------------------------------------------------------------------------------------------------------------------------
     #Création de la page login
-        '''
-    def login_page(self):
-        self.username_label = Label(self, text="Nom d'utilisateur:")
-        self.username_entry = Entry(self)
-
-        self.password_label = Label(self, text="Mot de passe:")
-        self.password_entry = Entry(self, show="*")
-
-        self.login_button = Button(self, text="Connexion", command = self.login())
-
-        self.username_label.pack(pady=10)
-        self.username_entry.pack(pady=5)
-        self.password_label.pack(pady=10)
-        self.password_entry.pack(pady=5)
-        self.login_button.pack(pady=20)
-        '''
     def login_page(self):
      # Création de la frame pour la page login
         self.login_frame = Frame(self)
@@ -62,8 +46,8 @@ class Application(Tk):
 #-----------------------------------------------------------------------------------------------------------------------------------
     # Fonction pour la connection
     def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
+        username = self.entry_username.get()
+        password = self.entry_password.get()
 
         # Vérification du login, exemple simplifié
         if username == 'admin' and password == 'adminpass':
