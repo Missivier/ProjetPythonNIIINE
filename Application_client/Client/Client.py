@@ -6,9 +6,6 @@ from tkinter import Tk, Label, Entry, Button, Frame, messagebox
 import tkinter as tk
 from view import HomeView
 
-
-# objet pour l'affichage de la page
-
 class Application(Tk):
     def __init__(self):
         super().__init__()
@@ -22,12 +19,14 @@ class Application(Tk):
         self.screen_height = self.winfo_screenheight()
         self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
 
-        self.background_frame = tk.Frame(self, bg="#DAD7D7")
+        self.background_frame = Frame(self, bg="#DAD7D7")
         self.background_frame.place(relwidth=1, relheight=1)
 
         # Création d'un bouton pour quitter l'application
-        self.bouton_quit = tk.Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
+        self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
+
+
 
         self.login_page()
 
@@ -50,6 +49,8 @@ class Application(Tk):
         self.entry_username.grid(row=0, column=1, padx=10, pady=10)
         self.entry_password.grid(row=1, column=1, padx=10, pady=10)
         button_login.grid(row=2, column=1, pady=20)
+
+        
 
     def login(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
