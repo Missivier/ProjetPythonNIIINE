@@ -3,9 +3,9 @@ import base64
 from datetime import datetime, timedelta
 
 class ERP:
-    def __init__(self, odoo_ipaddr="172.31.11.2", odoo_port="8069", db_name=None, username=None, password=None):
-        self.odoo_ipaddr = odoo_ipaddr
-        self.odoo_port = odoo_port
+    def __init__(self, db_name=None, username=None, password=None):
+        self.odoo_ipaddr = "172.31.11.2"
+        self.odoo_port = "8069"
         self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
         self.db_name = db_name
         self.username = username
@@ -136,29 +136,20 @@ class ERP:
         if self.stock_disponible:
             print("Stock disponible :", self.stock_disponible[0])
 
-    def main(self):
+    def run(self):
         self.connexion()
         self.obtenir_informations_produits()
         self.afficher_variables()
-        self.modifier_quantite_en_cours_production()
-        self.modifier_stock_odoo()
-        self.obtenir_informations_ordres_fabrication()
 
         # Obtention des informations des ordres de fabrication
         ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
 
-        # Vous pouvez utiliser ces valeurs comme nécessaire
+        # Utilisez ces informations comme nécessaire
         print("Ordres de fabrication :", ordres)
         print("Dates des ordres de fabrication :", dates)
         print("Quantités à produire :", quantites)
         print("Quantités en cours de production :", qty_producing)
 
-       
-
-    def run(self):
-        self.main()
-
 if __name__ == "__main__":
     erp_instance = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
     erp_instance.run()
-
