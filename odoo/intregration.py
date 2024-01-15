@@ -1,4 +1,5 @@
 import xmlrpc.client
+from datetime import datetime, timedelta
 
 class ERP:
     def __init__(self):
@@ -13,7 +14,7 @@ class ERP:
         self.reference_interne = []
         self.stock_disponible = []
         self.images_stock = []
-
+        
     def obtenir_informations_produits(self):
         common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common')
         uid = common.authenticate(self.db_name, self.username, self.password, {})
@@ -21,6 +22,7 @@ class ERP:
         if uid:
             models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object')
 
+            # Obtention des informations des produits
             product_ids = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'search', [[]], {})
             products = models.execute_kw(self.db_name, uid, self.password, 'product.product', 'read', [product_ids],
                                         {'fields': ['name', 'list_price', 'default_code', 'qty_available', 'image_1920']})
@@ -32,8 +34,23 @@ class ERP:
                 self.stock_disponible.append(product['qty_available'])
                 self.images_stock.append(product['image_1920'])
 
+            # Obtention des informations des ordres de fabrication
+            mo_ids = models.execute_kw(
+                self.db_name, uid, self.password,
+                'mrp.production', 'search',
+                [[['state', 'not in', ['cancel', 'done']]]]
+            )
+            mos = models.execute_kw(self.db_name, uid, self.password, 'mrp.production', 'read', [mo_ids],
+                                     {'fields': ['name', 'date_planned_start', 'product_qty']})
+
+            for mo in mos:
+                self.ordres_fabrication.append(mo['name'])
+                self.dates_ordres_fabrication.append(mo['date_planned_start'])
+                self.quantite_a_produire.append(mo['product_qty'])
+
         else:
             print('Échec de la connexion à Odoo.')
+
 
     def modifier_stock_odoo(self, default_code, new_stock):
         common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common')
@@ -74,6 +91,7 @@ class ERP:
         print("Référence interne :", self.reference_interne[0])
         print("Stock disponible :", self.stock_disponible[0])
 
+
     def main(self):
         self.obtenir_informations_produits()
         self.afficher_variables()
@@ -81,7 +99,6 @@ class ERP:
 
     def run(self):
         self.main()
-
 
 if __name__ == "__main__":
     erp_instance = ERP()
