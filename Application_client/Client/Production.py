@@ -43,7 +43,7 @@ class ProductionPage(Frame):
         self.affichage_tableau()
 
         # Ajouter un bouton pour activer la modification du stock
-        self.modify_stock_button = Button(self, text="Modifier le stock", command=self.modif_stock)
+        self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         self.modify_stock_button.pack(pady=10)
 
     def affichage_tableau(self):
@@ -72,16 +72,18 @@ class ProductionPage(Frame):
 
     def sort_column(self, col, reverse):
         # Obtenez les données actuelles de la Treeview
-        data = [(self.tree.set(child, "Nom"), self.tree.set(child, "Prix"), self.tree.set(child, "Référence Interne"), self.tree.set(child, "Stock Disponible"))
+        data = [(self.tree.set(child, "Numéro d'OF"), self.tree.set(child, "Date"),
+                self.tree.set(child, "Quantité à réaliser"), self.tree.set(child, "Quantité en production"))
                 for child in self.tree.get_children("")]
-        
+
         # Triez les données en fonction de la colonne spécifiée
-        data.sort(key=lambda x: x[int(col == "Prix")], reverse=reverse)
-        
+        col_index = {"Numéro d'OF": 0, "Date": 1, "Quantité à réaliser": 2, "Quantité en production": 3}[col]
+        data.sort(key=lambda x: x[col_index], reverse=reverse)
+
         # Effacez les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
-        
+
         # Ajoutez les données triées à la Treeview
         for item in data:
             self.tree.insert("", "end", values=item)

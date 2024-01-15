@@ -3,9 +3,9 @@ import base64
 from datetime import datetime, timedelta
 
 class ERP:
-    def __init__(self, odoo_ipaddr="172.31.11.2", odoo_port="8069", db_name=None, username=None, password=None):
-        self.odoo_ipaddr = odoo_ipaddr
-        self.odoo_port = odoo_port
+    def __init__(self, db_name=None, username=None, password=None):
+        self.odoo_ipaddr = "172.31.11.2"
+        self.odoo_port = "8069"
         self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
         self.db_name = db_name
         self.username = username
