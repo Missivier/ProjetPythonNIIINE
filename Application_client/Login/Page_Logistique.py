@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 
 
-def page_logistique(self, show_image,edit_stock):
+def page_logistique(self):
         '''
         '''
         #self.show_image = show_image
@@ -34,10 +34,10 @@ def page_logistique(self, show_image,edit_stock):
         self.table.heading("Nom", text="Nom")
         self.table.heading("Prix", text="Prix")
         self.table.heading("Stock", text="Stock")
-        '''
-        self.table.bind("<ButtonRelease-1>")
-        self.table.bind("<Double-ButtonRelease-1>")
-        '''
+
+        self.table.bind("<ButtonRelease-1>", self.show_image)
+        self.table.bind("<Double-ButtonRelease-1>", self.edit_stock)
+
         for item in self.data:
             self.table.insert("", "end", values=item)
 

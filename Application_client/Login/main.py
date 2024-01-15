@@ -29,7 +29,7 @@ class App(tk.Tk):
         page_admin(self)
 #---------------------------------------------------------------------------------------------------
         # Page logistique
-        page_logistique(self,show_image,edit_stock)
+        page_logistique(self)
 #---------------------------------------------------------------------------------------------------
         # Page commerce
         page_commerce(self)
@@ -132,7 +132,7 @@ class App(tk.Tk):
         self.button_deconnexion.place_forget()
 
 
-def show_image(self, event):
+    def show_image(self, event):
         selection = self.table.selection()
         if selection:
             item = self.table.item(selection[0])
@@ -146,7 +146,7 @@ def show_image(self, event):
                 # Gérer une éventuelle erreur si le chemin est incorrect ou si le fichier image est corrompu
                 print("Erreur lors du chargement de l'image")
 
-def edit_stock(self, event):
+    def edit_stock(self, event):
         col = self.table.identify_column(event.x)
         row = self.table.identify_row(event.y)
 
@@ -172,7 +172,7 @@ def edit_stock(self, event):
                 for data_row in self.data:
                     self.table.insert("", "end", values=data_row)
 
-def create_stock_dialog(self, current_stock):
+    def create_stock_dialog(self, current_stock):
         stock_dialog = tk.Toplevel(self)
         stock_dialog.title("Modifier le stock")
         stock_dialog.geometry("300x100")
@@ -190,7 +190,7 @@ def create_stock_dialog(self, current_stock):
         self.wait_window(stock_dialog)
         return new_stock.get() 
 
-def sort_column(self, col, reverse):
+    def sort_column(self, col, reverse):
         # Trier la colonne
         items = [(self.table.set(k, col), k) for k in self.table.get_children("")]
         items.sort(reverse=reverse)
