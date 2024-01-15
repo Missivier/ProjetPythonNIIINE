@@ -1,5 +1,6 @@
 import xmlrpc.client
 import base64
+from datetime import datetime, timedelta
 
 class ERP:
     def __init__(self, odoo_ipaddr="172.31.11.2", odoo_port="8069", db_name=None, username=None, password=None):
@@ -17,6 +18,10 @@ class ERP:
         self.models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object', allow_none=True)
         self.uid = 0
         self.images_stock = []
+        self.ordres_fabrication = []
+        self.dates_ordres_fabrication = []
+        self.quantite_a_produire = []
+        self.qty_producing = []
 
     def connexion(self):
         self.uid = self.common.authenticate(self.db_name, self.username, self.password, {})
@@ -43,46 +48,37 @@ class ERP:
                 self.prix_article.append(product['list_price'])
                 self.reference_interne.append(product['default_code'])
                 self.stock_disponible.append(product['qty_available'])
-
-                # Ajout de l'image convertie en base64
-                image_data = product['image_1920']
-                if image_data and isinstance(image_data, str):
-                    image_data = image_data.encode('utf-8')  # Convertir la chaîne en bytes
-
-                if image_data:
-                    base64_image = base64.b64encode(image_data).decode('utf-8')
-                    self.images_stock.append(base64_image)
-                else:
-                    self.images_stock.append(None)
+                self.images_stock.append(product['image_1920'])
         else:
             print('Échec de la connexion à Odoo.')
 
-    def modifier_stock_odoo(self, default_code, new_stock):
+    def obtenir_informations_ordres_fabrication(self):
+        ordres_fabrication = []
+        dates_ordres_fabrication = []
+        quantite_a_produire = []
+        qty_producing = []
+
         if self.uid:
-            product_id = self.models.execute_kw(
+            mo_ids = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
-                'product.product', 'search',
-                [[['default_code', '=', default_code]]]
+                'mrp.production', 'search',
+                [[['state', 'not in', ['cancel', 'done']]]]
             )
-            if product_id:
-                quant_id = self.models.execute_kw(
-                    self.db_name, self.uid, self.password,
-                    'stock.quant', 'search',
-                    [[['product_id', '=', product_id[0]]]]
-                )
-                if quant_id:
-                    self.models.execute_kw(
-                        self.db_name, self.uid, self.password,
-                        'stock.quant', 'write',
-                        [quant_id, {'quantity': new_stock}]
-                    )
-                    print(f"Stock mis à jour avec succès pour l'article avec le default_code '{default_code}'.")
-                else:
-                    print(f"Le produit avec le default_code '{default_code}' n'a pas de stock.")
-            else:
-                print(f"Le default_code '{default_code}' n'a pas été trouvé.")
+            mos = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'mrp.production', 'read', [mo_ids],
+                {'fields': ['name', 'date_planned_start', 'product_qty', 'qty_producing']}
+            )
+
+            for mo in mos:
+                ordres_fabrication.append(mo['name'])
+                dates_ordres_fabrication.append(mo['date_planned_start'])
+                quantite_a_produire.append(mo['product_qty'])
+                qty_producing.append(mo['qty_producing'])
         else:
             print('Échec de la connexion à Odoo.')
+
+        return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
 
     def afficher_variables(self):
         if self.nom_article:
@@ -98,6 +94,16 @@ class ERP:
         self.connexion()
         self.obtenir_informations_produits()
         self.afficher_variables()
+
+        # Obtention des informations des ordres de fabrication
+        ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
+
+        # Vous pouvez utiliser ces valeurs comme nécessaire
+        print("Ordres de fabrication :", ordres)
+        print("Dates des ordres de fabrication :", dates)
+        print("Quantités à produire :", quantites)
+        print("Quantités en cours de production :", qty_producing)
+
         # Vous pouvez appeler self.modifier_stock_odoo() avec les valeurs nécessaires ici
 
     def run(self):
