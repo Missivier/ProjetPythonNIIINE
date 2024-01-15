@@ -79,13 +79,47 @@ class ERP:
             print('Échec de la connexion à Odoo.')
 
         return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
+    
+    def modifier_stock_odoo(self, default_code, new_stock):
+        if self.uid:
+            product_id = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'product.product', 'search',
+                [[['default_code', '=', default_code]]]
+            )
+            if product_id:
+                quant_id = self.models.execute_kw(
+                    self.db_name, self.uid, self.password,
+                    'stock.quant', 'search',
+                    [[['product_id', '=', product_id[0]]]]
+                )
+                if quant_id:
+                    self.models.execute_kw(
+                        self.db_name, self.uid, self.password,
+                        'stock.quant', 'write',
+                        [quant_id, {'quantity': new_stock}]
+                    )
+                    print(f"Stock mis à jour avec succès pour l'article avec le default_code '{default_code}'.")
+                else:
+                    print(f"Le produit avec le default_code '{default_code}' n'a pas de stock.")
+            else:
+                print(f"Le default_code '{default_code}' n'a pas été trouvé.")
+        else:
+            print('Échec de la connexion à Odoo.')
 
    
     def main(self):
         self.connexion()
         self.obtenir_informations_produits()
+<<<<<<< HEAD
         self.obtenir_informations_ordres_fabrication()
         
+=======
+        self.afficher_variables()
+        self.modifier_stock_odoo()
+        self.obtenir_informations_ordres_fabrication()
+
+>>>>>>> cc87e24798f94af20b731ea247eb22fd40c5b2a5
 
         # Obtention des informations des ordres de fabrication
         ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
