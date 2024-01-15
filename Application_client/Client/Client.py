@@ -6,6 +6,9 @@ from tkinter import Tk, Label, Entry, Button, Frame, messagebox
 import tkinter as tk
 from view import HomeView
 
+
+# objet pour l'affichage de la page 
+
 class Application(Tk):
     def __init__(self):
         super().__init__()
