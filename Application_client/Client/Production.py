@@ -43,7 +43,7 @@ class ProductionPage(Frame):
         self.affichage_tableau()
 
         # Ajouter un bouton pour activer la modification du stock
-        self.modify_stock_button = Button(self, text="Modifier le stock", command=self.modif_stock)
+        self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         self.modify_stock_button.pack(pady=10)
 
     def affichage_tableau(self):
