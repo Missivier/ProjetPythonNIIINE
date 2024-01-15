@@ -7,7 +7,7 @@ import tkinter as tk
 from view import HomeView
 
 
-# objet pour l'affichage de la page 
+# objet pour l'affichage de la page
 
 class Application(Tk):
     def __init__(self):
@@ -28,8 +28,6 @@ class Application(Tk):
         # Création d'un bouton pour quitter l'application
         self.bouton_quit = tk.Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
-
-
 
         self.login_page()
 

@@ -72,17 +72,23 @@ class HomeView(Frame):
     def affichage_tableau(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_produits()
- 
+
+        # Afficher les valeurs récupérées pour le débogage
+        print("Nom des articles:", self.erp.nom_article)
+        print("Prix des articles:", self.erp.prix_article)
+        print("Référence Interne:", self.erp.reference_interne)
+        print("Stock Disponible:", self.erp.stock_disponible)
+
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
- 
+
         # Ajouter les nouvelles données obtenues à la Treeview
         for i in range(len(self.erp.nom_article)):
             # Utiliser anchor pour centrer le texte
             self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
                                                 self.erp.reference_interne[i], self.erp.stock_disponible[i]))
- 
+            
     def update_table(self):
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
