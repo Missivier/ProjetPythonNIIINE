@@ -1,11 +1,15 @@
+import sys
+sys.path.insert(0,'odoo')
+from intregration import ERP
 
-from tkinter import Tk, Label, Entry, Button, Frame
-from tkinter import messagebox
+from tkinter import Tk, Label, Entry, Button, Frame, messagebox
 from view import HomeView
 
 class Application(Tk):
     def __init__(self):
         super().__init__()
+
+
         self.title("Application CyberVest")
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
@@ -18,6 +22,9 @@ class Application(Tk):
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
 
+         # Instance classe ERP
+        self.erp = ERP("db_cybervest", self.username_entry.get(), self.password_entry.get())
+        
         self.login_page()
 
     def login_page(self):
@@ -27,7 +34,7 @@ class Application(Tk):
         self.password_label = Label(self, text="Mot de passe:")
         self.password_entry = Entry(self, show="*")
 
-        self.login_button = Button(self, text="Connexion", command=self.login)
+        self.login_button = Button(self, text="Connexion", command = self.login())
 
         self.username_label.pack(pady=10)
         self.username_entry.pack(pady=5)
@@ -36,16 +43,7 @@ class Application(Tk):
         self.login_button.pack(pady=20)
 
     def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-
-        # Vérification du login, exemple simplifié
-        if username == 'admin' and password == 'adminpass':
-            self.show_page(HomeView)
-        elif username == '1' and password == '1':
-            self.show_page(HomeView)
-        else:
-            self.show_error("Erreur de connexion", "Nom d'utilisateur ou mot de passe incorrect")
+        self.erp.connexion()
 
     def show_page(self, page_class):
         # Supprime les widgets de la page de connexion
