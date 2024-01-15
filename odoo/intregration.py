@@ -2,7 +2,7 @@ import xmlrpc.client
 
 class ERP:
     def __init__(self):
-        self.odoo_ipaddr = "172.31.10.239"
+        self.odoo_ipaddr = "172.31.11.2"
         self.odoo_port = "8069"
         self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
         self.db_name = 'db_cybervest'
@@ -67,10 +67,10 @@ class ERP:
             print('Échec de la connexion à Odoo.')
 
     def afficher_variables(self):
-        print("Nom des articles :", self.nom_article)
-        print("Prix des articles :", self.prix_article)
-        print("Référence interne :", self.reference_interne)
-        print("Stock disponible :", self.stock_disponible)
+        print("Nom des articles :", self.nom_article[0])
+        print("Prix des articles :", self.prix_article[0])
+        print("Référence interne :", self.reference_interne[0])
+        print("Stock disponible :", self.stock_disponible[0])
 
     def main(self):
         self.obtenir_informations_produits()
