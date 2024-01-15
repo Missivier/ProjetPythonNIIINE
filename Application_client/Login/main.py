@@ -28,7 +28,7 @@ class App(tk.Tk):
         page_init(self)
 #---------------------------------------------------------------------------------------------------
         # Création de la frame pour la page login
-        page_login(self,)
+        page_login(self)
 #---------------------------------------------------------------------------------------------------
         #Page production
         page_prod(self)
