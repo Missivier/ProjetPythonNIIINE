@@ -79,8 +79,35 @@ class ERP:
             print('Échec de la connexion à Odoo.')
 
         return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
+    
+def modifier_stock_odoo(self, default_code, new_stock):
+        if self.uid:
+            product_id = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'product.product', 'search',
+                [[['default_code', '=', default_code]]]
+            )
+            if product_id:
+                quant_id = self.models.execute_kw(
+                    self.db_name, self.uid, self.password,
+                    'stock.quant', 'search',
+                    [[['product_id', '=', product_id[0]]]]
+                )
+                if quant_id:
+                    self.models.execute_kw(
+                        self.db_name, self.uid, self.password,
+                        'stock.quant', 'write',
+                        [quant_id, {'quantity': new_stock}]
+                    )
+                    print(f"Stock mis à jour avec succès pour l'article avec le default_code '{default_code}'.")
+                else:
+                    print(f"Le produit avec le default_code '{default_code}' n'a pas de stock.")
+            else:
+                print(f"Le default_code '{default_code}' n'a pas été trouvé.")
+        else:
+            print('Échec de la connexion à Odoo.')
 
-    def afficher_variables(self):
+def afficher_variables(self):
         if self.nom_article:
             print("Nom des articles :", self.nom_article[0])
         if self.prix_article:
@@ -90,7 +117,7 @@ class ERP:
         if self.stock_disponible:
             print("Stock disponible :", self.stock_disponible[0])
 
-    def main(self):
+def main(self):
         self.connexion()
         self.obtenir_informations_produits()
         self.afficher_variables()
@@ -106,7 +133,7 @@ class ERP:
 
         # Vous pouvez appeler self.modifier_stock_odoo() avec les valeurs nécessaires ici
 
-    def run(self):
+def run(self):
         self.main()
 
 if __name__ == "__main__":
