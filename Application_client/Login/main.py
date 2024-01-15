@@ -1,3 +1,7 @@
+import sys
+sys.path.insert(0,'odoo')
+from intregration import ERP
+
 import tkinter as tk
 from tkinter import messagebox
 
@@ -14,6 +18,10 @@ from Page_Commerce import page_commerce
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+
+         # Créer les variables d'entrée
+        self.entry_username = tk.StringVar()
+        self.entry_password = tk.StringVar()
         
 
         #Creation de la page
@@ -29,7 +37,7 @@ class App(tk.Tk):
         page_admin(self)
 #---------------------------------------------------------------------------------------------------
         # Page logistique
-        page_logistique(self,show_image,edit_stock)
+        page_logistique(self)
 #---------------------------------------------------------------------------------------------------
         # Page commerce
         page_commerce(self)
@@ -39,35 +47,15 @@ class App(tk.Tk):
 #---------------------------------------------------------------------------------------------------
         # Bouton retour admin
         self.button_return = tk.Button(self, text="Retour", command=self.show_admin_page)
+
+
+        # Instance classe ERP
+        self.erp = ERP("db_cybervest", self.entry_username.get(), self.entry_password.get())
            
 
 #===================================================================================================
 # Fonction du login
-    def login(self):
-        username = self.entry_username.get()
-        password = self.entry_password.get()
 
-        if username == "1" and password == "1":
-            self.hide_login_page()
-            self.show_prod_page()
-            self.show_button_deconnexion()
-
-        elif username == "0" and password == "0":
-            self.hide_login_page()
-            self.show_admin_page()
-            self.show_button_deconnexion()
-
-        elif username == "2" and password == "2":
-            self.hide_login_page()
-            self.show_logis_page()
-            self.show_button_deconnexion()
-
-        elif username == "3" and password == "3":
-            self.hide_login_page()
-            self.show_commerce_page()
-            self.show_button_deconnexion()
-        else:
-            messagebox.showerror("Erreur de connexion", "Nom d'utilisateur ou mot de passe incorrect")
     def show_page_login(self):
         self.entry_password.delete(0, tk.END)
         self.entry_username.delete(0, tk.END)
@@ -132,8 +120,8 @@ class App(tk.Tk):
         self.button_deconnexion.place_forget()
 
 
-def show_image(self, event):
-        selection = self.table.selection()
+    def show_image(self, event):
+        selection = self.table.selection(event)
         if selection:
             item = self.table.item(selection[0])
             image_name = item['values'][4]
@@ -146,7 +134,7 @@ def show_image(self, event):
                 # Gérer une éventuelle erreur si le chemin est incorrect ou si le fichier image est corrompu
                 print("Erreur lors du chargement de l'image")
 
-def edit_stock(self, event):
+    def edit_stock(self, event):
         col = self.table.identify_column(event.x)
         row = self.table.identify_row(event.y)
 
@@ -172,7 +160,7 @@ def edit_stock(self, event):
                 for data_row in self.data:
                     self.table.insert("", "end", values=data_row)
 
-def create_stock_dialog(self, current_stock):
+    def create_stock_dialog(self, current_stock):
         stock_dialog = tk.Toplevel(self)
         stock_dialog.title("Modifier le stock")
         stock_dialog.geometry("300x100")
@@ -190,7 +178,7 @@ def create_stock_dialog(self, current_stock):
         self.wait_window(stock_dialog)
         return new_stock.get() 
 
-def sort_column(self, col, reverse):
+    def sort_column(self, col, reverse):
         # Trier la colonne
         items = [(self.table.set(k, col), k) for k in self.table.get_children("")]
         items.sort(reverse=reverse)
@@ -207,5 +195,6 @@ def sort_column(self, col, reverse):
 ################################################################################################
 if __name__=="__main__":
     myApp = App()
+    erp = ERP()
     myApp.mainloop()
 
