@@ -140,6 +140,9 @@ class ERP:
         self.connexion()
         self.obtenir_informations_produits()
         self.afficher_variables()
+        self.modifier_quantite_en_cours_production()
+        self.modifier_stock_odoo()
+        self.obtenir_informations_ordres_fabrication()
 
         # Obtention des informations des ordres de fabrication
         ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
