@@ -1,6 +1,8 @@
+import sys
+sys.path.insert(0,'odoo')
+from intregration import ERP
 
-from tkinter import Tk, Button, Frame, Label, Entry
-import tkinter as tk
+from tkinter import Tk, Label, Entry, Button, Frame
 from tkinter import messagebox
 from view import HomeView
 from Production import ProductionPage
@@ -8,9 +10,6 @@ from Production import ProductionPage
 class Application(Tk):
     def __init__(self):
         super().__init__()
-
-#-----------------------------------------------------------------------------------------------------------------------------------
-        #Creation de la page principale
         self.title("Application CyberVest")
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
@@ -23,7 +22,6 @@ class Application(Tk):
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
 
-        #Set login
         self.login_page()
 #-----------------------------------------------------------------------------------------------------------------------------------
     #Création de la page login
@@ -35,7 +33,7 @@ class Application(Tk):
         self.password_label = Label(self, text="Mot de passe:")
         self.password_entry = Entry(self, show="*")
 
-        self.login_button = Button(self, text="Connexion", command=self.login)
+        self.login_button = Button(self, text="Connexion", command = self.login())
 
         self.username_label.pack(pady=10)
         self.username_entry.pack(pady=5)
@@ -64,20 +62,17 @@ class Application(Tk):
 #-----------------------------------------------------------------------------------------------------------------------------------
     # Fonction pour la connection
     def login(self):
-        username = self.entry_username.get()
-        password = self.entry_password.get()
+        username = self.username_entry.get()
+        password = self.password_entry.get()
 
         # Vérification du login, exemple simplifié
         if username == 'admin' and password == 'adminpass':
             self.show_page(HomeView)
         elif username == '1' and password == '1':
             self.show_page(HomeView)
-        elif username == '2' and password == '2':
-            self.show_page(ProductionPage)
         else:
             self.show_error("Erreur de connexion", "Nom d'utilisateur ou mot de passe incorrect")
-#-----------------------------------------------------------------------------------------------------------------------------------
-    # Enlever la page login
+
     def show_page(self, page_class):
         # Supprime les widgets de la page de connexion
         self.login_frame.destroy()
