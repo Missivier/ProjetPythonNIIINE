@@ -102,7 +102,6 @@ class ERP:
                     print(f"Stock mis à jour avec succès pour l'article avec le default_code '{default_code}'.")
                 else:
                     print(f"Le produit avec le default_code '{default_code}' n'a pas de stock.")
-
             else:
                 print(f"Le default_code '{default_code}' n'a pas été trouvé.")
         else:
@@ -141,9 +140,6 @@ class ERP:
         self.connexion()
         self.obtenir_informations_produits()
         self.afficher_variables()
-        self.modifier_quantite_en_cours_production()
-        self.obtenir_informations_ordres_fabrication()
-        self.modifier_stock_odoo()
 
         # Obtention des informations des ordres de fabrication
         ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
@@ -154,9 +150,12 @@ class ERP:
         print("Quantités à produire :", quantites)
         print("Quantités en cours de production :", qty_producing)
 
+       
+
     def run(self):
         self.main()
 
 if __name__ == "__main__":
     erp_instance = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
     erp_instance.run()
+
