@@ -57,7 +57,7 @@ class Application(Tk):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
         erp = ERP("db_cybervest", self.entry_username.get(), self.entry_password.get())
         erp.connexion()
-        erp.uid
+        self.uid = erp.uid
 
         if erp.uid == 2:
             self.show_page(ProductionPage)
@@ -65,6 +65,8 @@ class Application(Tk):
             ProductionPage()
 
     def show_page(self, page_class):
+
+    
         # Supprime les widgets de la page de connexion
         self.login_frame.destroy()
 
