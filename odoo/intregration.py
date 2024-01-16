@@ -60,23 +60,30 @@ class ERP:
         if self.uid:
             product_ids = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
-                'mrp.production', 'search', [[]], {}
-                [[['state', 'not in', ['cancel', 'done']]]]
+                'mrp.production', 'search', [[['state', 'not in', ['cancel', 'done']]]], {}
             )
             products = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
                 'mrp.production', 'read', [product_ids],
                 {'fields': ['name', 'date_planned_start', 'product_qty', 'qty_producing']}
             )
- 
+
+            ordres = []
+            dates = []
+            quantites = []
+            qty_producing = []
+
             for product in products:
-                self.ordres_fabrication.append(product['name'])
-                self.dates_ordres_fabrication.append(product['list_price'])
-                self.quantite_a_produire.append(product['default_code'])
-                self.qty_producing.append(product['qty_available'])
+                ordres.append(product['name'])
+                dates.append(product['date_planned_start'])
+                quantites.append(product['product_qty'])
+                qty_producing.append(product['qty_producing'])
+
+            return ordres, dates, quantites, qty_producing
         else:
-            print('Échec de la connexion à Odoo.')            
-    
+            print('Échec de la connexion à Odoo.')
+            return [], [], [], []
+
     def modifier_stock_odoo(self, default_code, new_stock):
         if self.uid:
             product_id = self.models.execute_kw(

@@ -4,9 +4,7 @@ from intregration import ERP
 
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
 import tkinter as tk
-
-
-
+ 
 class Application(Tk):
     def __init__(self):
         super().__init__()
@@ -56,8 +54,12 @@ class Application(Tk):
         
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.pageProd()
+        elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
+            self.pageAdmin()
+
         else:
             self.pageLog()
+
 
     def pageProd(self):
 
@@ -102,20 +104,20 @@ class Application(Tk):
         self.erp.obtenir_informations_ordres_fabrication()
 
         # Afficher les valeurs récupérées pour le débogage
-        print("Nom des articles:", self.erp.ordres_fabrication)
-        print("Prix des articles:", self.erp.dates_ordres_fabrication)
-        print("Référence Interne:", self.erp.quantite_a_produire)
-        print("Stock Disponible:", self.erp.qty_producing)
+        print("OF  :", self.erp.ordres)
+        print("Date", self.erp.dates)
+        print("Quantité demandée", self.erp.quantites)
+        print("Quantité en production", self.erp.qty_producing)
 
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
 
         # Ajouter les nouvelles données obtenues à la Treeview
-        for i in range(len(self.erp.nom_article)):
+        for i in range(len(self.erp.ordres)):
             # Utiliser anchor pour centrer le texte
-            self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
-                                                self.erp.reference_interne[i], self.erp.stock_disponible[i]))
+            self.tree.insert("", "end", values=(self.erp.ordres[i], self.erp.dates[i],
+                                                self.erp.quantites[i], self.erp.qty_producing[i]))
 
     def pageLog(self):
 
@@ -156,6 +158,26 @@ class Application(Tk):
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
       
+
+    def pageAdmin(self):
+
+        # Supprime les widgets de la page de connexion
+        self.login_frame.place_forget()
+        # Supprime le bouton Quitter
+        self.bouton_quit.destroy()
+        #Création de la page
+        self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
+        self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+        #Creation bouton pour aller page prod
+        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.pageProd)
+        #self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
+        #Creation bouton pour aller page logistique
+        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.pageLog)
+        #self.Button_logis.place(relx=0.5, rely=0.5, anchor="center")
+        #Creation bouton pour aller page commerce
+        #self.Button_commerce = tk.Button(self.page_admin_frame, text="Commerce",fg="black", bg="#DAD7D7", font=("Arial", 20),command=self.show_commerce_page_admin)
+        #self.Button_commerce.place(relx=0.7, rely=0.5, anchor="center")
+
 
     def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
