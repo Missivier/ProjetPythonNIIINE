@@ -37,9 +37,10 @@ class Application(Tk):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.pageProd()
+            
         elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
             self.pageAdmin()
- 
+            
         else:
             self.pageLog()
 
@@ -71,6 +72,7 @@ class Application(Tk):
  
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
+
         #Création de la page
         self.page_prod_frame = tk.Frame(self,bg="#DAD7D7")
         self.page_prod_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
@@ -101,12 +103,17 @@ class Application(Tk):
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
+
+        # Bouton deco
+        self.Bouton_deco()
  
     #Creation de la page Logistique
     def pageLog(self, master=None):
  
         # Supprime les widgets de la page de connexion
         self.login_frame.grid_forget()
+        # Bouton deco
+        self.Bouton_deco()
          # Supprime le bouton Quitter
         self.bouton_quit.grid_forget()
  
@@ -158,25 +165,28 @@ class Application(Tk):
         # Ajout du bouton Valider
         self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
         self.validate_stock_button.place(relx=0.55, rely=0.4, anchor='center')
+
+        # Bouton deco
+        self.Bouton_deco()
  
     #Création de la page Admin
     def pageAdmin(self):
  
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
+
         #Création de la page
         self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
-        self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+        self.page_admin_frame.place(relx=0, rely=0.1, relwidth=1, relheight=0.8)
         #Creation bouton pour aller page prod
-        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Boutton_retour()])
+        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Bouton_retour()])
         self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
         #Creation bouton pour aller page logistique
-        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Boutton_retour()])
-        self.Button_logis.place(relx=0.5, rely=0.5, anchor="center")
-        #Creation bouton pour aller page commerce
-        self.Button_commerce = tk.Button(self.page_admin_frame, text="Commerce",fg="black", bg="#DAD7D7", font=("Arial", 20),command=lambda: [self.pageVente(), self.Boutton_retour()])
-        self.Button_commerce.place(relx=0.7, rely=0.5, anchor="center")
-
+        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Bouton_retour()])
+        self.Button_logis.place(relx=0.7, rely=0.5, anchor="center")
+        # Bouton deco
+        self.Bouton_deco()
+        '''
         # Configuration des en-têtes de colonnes
         columns = ("Nom", "Prix", "Référence Interne", "Stock Disponible")
         for col in columns:
@@ -193,16 +203,12 @@ class Application(Tk):
         # Ajout du bouton Valider
         self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
         self.validate_stock_button.place(relx=0.535, rely=0.405, anchor='center')
-
-    #Création de la page Vente
-    def pageVente(self):
-        print("ok")
-
+        '''
     # Creation et gestion bouton retour
-    def Boutton_retour(self):
+    def Bouton_retour(self):
         #Creation bouton pour aller retourner menu admin
         self.Button_retour = tk.Button(self, text="Retour",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
-        self.Button_retour.place(relx=0.1, rely=0.9, anchor="sw")
+        self.Button_retour.place(relx=0, rely=1, anchor="sw")
     def Retour(self):
         #Fonction pour revenir sur le menu admin
         self.Button_retour.place_forget()
@@ -210,6 +216,18 @@ class Application(Tk):
         self.page_log_frame.place_forget()
         self.pageAdmin()
 
+    # Création et fonction bouton déco
+    def Bouton_deco(self):
+        #Creation bouton déco
+        self.Button_retour = tk.Button(self, text="Deconnexion",fg="black", bg="#DAD7D7", font=("Arial", 12), command=self.deconnexion)
+        self.Button_retour.place(relx=1, rely=0, anchor="ne")
+    def deconnexion(self):
+        self.login_page()
+        self.Button_retour.place_forget()
+        self.page_admin_frame.place_forget()
+        self.page_prod_frame.place_forget()
+        self.page_log_frame.place_forget()
+        
 
     def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
