@@ -4,7 +4,7 @@ from intregration import ERP
  
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
 import tkinter as tk
-from view import HomeView
+ 
  
  
 class Application(Tk):
@@ -93,34 +93,34 @@ class Application(Tk):
         self.tree.pack()
  
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
-        self.affichage_tableau()
+        self.affichage_tableau_prod()
  
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
  
  
-    def pageLog(self):
+    def pageLog(self, master=None):
  
         # Supprime les widgets de la page de connexion
         self.login_frame.grid_forget()
- 
- 
-        # Supprime le bouton Quitter
+         # Supprime le bouton Quitter
         self.bouton_quit.grid_forget()
- 
-        
-        self.label = Label(self, text="Bienvenue sur la page d'accueil !", font=('Helvetica', 24))
-        self.label.grid(row=0, column=0, pady=10, columnspan=5)
 
+        self.page_log_frame = tk.Frame(self)
+        self.page_log_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+
+        self.label = Label(self, text="Logistique", font=('Helvetica', 24))
+        self.label.pack(pady=10)
+ 
         # Création de la grille pour afficher les articles
         self.tree = ttk.Treeview(self, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
  
         # Configuration des en-têtes de colonnes
-        self.tree.heading("Nom", text="Nom", command=lambda: self.sort_column("Nom", False))
-        self.tree.heading("Prix", text="Prix", command=lambda: self.sort_column("Prix", False))
-        self.tree.heading("Référence Interne", text="Référence Interne", command=lambda: self.sort_column("Référence Interne", False))
-        self.tree.heading("Stock Disponible", text="Stock Disponible", command=lambda: self.sort_column("Stock Disponible", False))
+        self.tree.heading("Nom", text="Nom", command=lambda: self.sort_column_log("Nom", False))
+        self.tree.heading("Prix", text="Prix", command=lambda: self.sort_column_log("Prix", False))
+        self.tree.heading("Référence Interne", text="Référence Interne", command=lambda: self.sort_column_log("Référence Interne", False))
+        self.tree.heading("Stock Disponible", text="Stock Disponible", command=lambda: self.sort_column_log("Stock Disponible", False))
  
         # Ajout des colonnes avec une largeur augmentée de 50%
         self.tree.column("Nom", width=int(150 * 1.5), anchor="center")
@@ -128,17 +128,13 @@ class Application(Tk):
         self.tree.column("Référence Interne", width=int(100 * 1.5), anchor="center")
         self.tree.column("Stock Disponible", width=int(100 * 1.5), anchor="center")
  
-        # Utilisez grid au lieu de pack
-        self.tree.grid(row=1, column=0, padx=10, pady=10, columnspan=5)
- 
-        # Ajout d'une instance de la classe ERP comme attribut de la classe HomeView
-        self.erp_instance = ERP()
+        self.tree.pack()
  
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
-        self.affichage_tableau()
+        self.affichage_tableau_log()
  
         # Binding de l'événement de clic
-        self.tree.bind("<ButtonRelease-1>", self.show_image)
+        self.tree.bind("<ButtonRelease-1>", self.show_image_log)
  
         # Ajoutez la variable self.sort_order pour suivre l'état du tri (ascendant ou descendant)
         self.sort_order = {}
@@ -147,23 +143,20 @@ class Application(Tk):
         columns = ("Nom", "Prix", "Référence Interne", "Stock Disponible")
         for col in columns:
             self.sort_order[col] = True  # Initialisation à True pour tri ascendant par défaut
-            self.tree.heading(col, text=col, command=lambda c=col: self.sort_column(c))
+            self.tree.heading(col, text=col, command=lambda c=col: self.sort_column_log(c))
 
         # Ajout de la case d'entrée pour la quantité d'articles à retirer
-        self.stock_entry_label = Label(self, text="Affectation stock:")
-        self.stock_entry_label.grid(row=3, column=0, padx=5, pady=5)
+        self.stock_entry_label = Label(self.page_log_frame, text="Affectation stock:")
+        self.stock_entry_label.place(relx=0.5, rely=0.4, anchor='center') 
 
-        self.stock_entry = Entry(self)
-        self.stock_entry.grid(row=3, column=1, padx=5, pady=5)
+        self.stock_entry = Entry(self.page_log_frame)
+        self.stock_entry.place(relx=0.48, rely=0.41) 
 
         # Ajout du bouton Valider
-        self.validate_stock_button = Button(self, text="Valider", command=self.update_stock)
-        self.validate_stock_button.grid(row=3, column=2, padx=5, pady=5, sticky="e")
- 
- 
- 
- 
-    def affichage_tableau(self):
+        self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
+        self.validate_stock_button.place(relx=0.535, rely=0.405, anchor='center')
+
+    def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_produits()
  
@@ -193,25 +186,31 @@ class Application(Tk):
             self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
                                                 self.erp.quantite_a_produire[i], self.erp.qty_producing[i]))
  
-    def sort_column(self, col, reverse):
+    def sort_column_log(self, col):
+        # Obtenez l'état actuel du tri pour la colonne spécifiée
+        reverse = self.sort_order[col]
+
+        # Inversez l'état du tri pour la prochaine fois
+        self.sort_order[col] = not reverse
+
         # Obtenez les données actuelles de la Treeview
-        data = [(self.tree.set(child, "Numéro d'OF"), self.tree.set(child, "Date"),
-                self.tree.set(child, "Quantité à réaliser"), self.tree.set(child, "Quantité en production"))
+        data = [(self.tree.set(child, "Nom"), self.tree.set(child, "Prix"), self.tree.set(child, "Référence Interne"), self.tree.set(child, "Stock Disponible"))
                 for child in self.tree.get_children("")]
-        
-        # Triez les données en fonction de la colonne spécifiée
-        col_index = {"Numéro d'OF": 0, "Date": 1, "Quantité à réaliser": 2, "Quantité en production": 3}[col]
+
+        # Triez les données en fonction de la colonne spécifiée et de l'état du tri
+        col_index = ["Nom", "Prix", "Référence Interne", "Stock Disponible"].index(col)
         data.sort(key=lambda x: x[col_index], reverse=reverse)
- 
+
         # Effacez les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
-        
+
         # Ajoutez les données triées à la Treeview
         for item in data:
             self.tree.insert("", "end", values=item)
+
  
-    def modif_stock(self):
+    def modif_stock_log(self):
         # Création du rectangle pour entrer le nombre d'articles
         self.entry_frame = Tk.Frame(self.master)
         self.entry_label = Tk.Label(self.entry_frame, text="Ajustement stock:")
@@ -225,8 +224,80 @@ class Application(Tk):
         self.validate_button.grid(row=0, column=2, padx=5, pady=5, sticky="e")
  
         self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+    def update_stock_log(self):
+        # Récupération de la quantité saisie dans la case d'entrée
+        quantite = self.stock_entry.get()
+
+        # Assurez-vous que la quantité est un nombre entier
+        try:
+            quantite = int(quantite)
+        except ValueError:
+            print("Veuillez saisir un nombre entier pour la quantité.")
+            return
+
+        # Stockage de la nouvelle quantité dans la variable new_stock
+        self.new_stock = quantite
+
+        # Obtenez la ligne sélectionnée
+        item_selectionne = self.tree.selection()
+
+        if not item_selectionne:
+            print("Aucune ligne sélectionnée.")
+            return
+
+        # Obtenez le nom de l'article associé à la ligne sélectionnée
+        nom_article = self.tree.item(item_selectionne, "values")[0]
+
+        # Mise à jour du stock dans Odoo
+        succes = self.erp.update_odoo_stock(nom_article, quantite)
+
+        if succes:
+            # Affichage d'un message de confirmation dans le terminal
+            print(f"Stock de {quantite} articles de '{nom_article}' mis à jour avec succès dans Odoo.")
+        else:
+            # En cas d'échec de la mise à jour dans Odoo
+            print(f"Échec de la mise à jour du stock pour '{nom_article}' dans Odoo.")
+
+        # Effacement de la case d'entrée et du bouton Valider après la mise à jour
+        self.stock_entry.delete(0, 'end')
  
+    def show_image_log(self, event):
+        # Récupération de la ligne sélectionnée
+        item = self.tree.selection()[0]
  
+        # Récupération du nom de l'article associé à la ligne sélectionnée
+        article_name = self.tree.item(item, "values")[0]  # Utilisez l'index 0 pour le nom de l'article
+
+        # Afficher le nom de l'article dans le terminal
+        print("Article sélectionné:", article_name)
+ 
+        # Récupération de l'index associé à l'article
+        article_index = self.get_article_index(article_name)
+ 
+        # Récupération du chemin de l'image associée à l'article
+        image_path = self.erp.images_stock[article_index]
+ 
+        # Supprimer l'ancien Label s'il existe
+        for widget in self.grid_slaves():
+            if isinstance(widget, Label) and widget != self.label:
+                widget.destroy()
+ 
+        if image_path:
+            # Affichage de l'image dans un Label à l'intérieur de la même fenêtre
+            img = PhotoImage(file=image_path)
+ 
+            # Création d'un widget Label pour afficher l'image à droite
+            image_label = Label(self, image=img)
+            image_label.photo = img
+            image_label.pack(side="right", padx=10, pady=10, fill="both", expand=True)
+ 
+    def get_article_index_log(self, article_name):
+        # Fonction utilitaire pour récupérer l'index de l'article dans self.erp_instance.images_stock
+        for i, article in enumerate(self.erp.images_stock):
+            if article["name"] == article_name:
+                return i
+        return -1  # Retourne -1 si l'article n'est pas trouvé 
  
 if __name__ == "__main__":
     app = Application()
