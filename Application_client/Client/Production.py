@@ -30,9 +30,9 @@ class ProductionPage(Frame):
  
         # Ajout des colonnes avec une largeur augmentée de 50%
         self.tree.column("Numéro d'OF", width=int(150 * 1.5), anchor="center")
-        self.tree.column("Date", width=int(100 * 1.5), anchor="center")
-        self.tree.column("Quantité à réaliser", width=int(100 * 1.5), anchor="center")
-        self.tree.column("Quantité en production", width=int(100 * 1.5), anchor="center")
+        self.tree.column("Date", width=int(150 * 1.5), anchor="center")
+        self.tree.column("Quantité à réaliser", width=int(150 * 1.5), anchor="center")
+        self.tree.column("Quantité en production", width=int(150 * 1.5), anchor="center")
 
         self.tree.pack()
 
@@ -55,10 +55,10 @@ class ProductionPage(Frame):
             self.tree.delete(item)
 
         # Ajouter les nouvelles données obtenues à la Treeview
-        for i in range(len(self.erp_instance.ordres)):
+        for i in range(len(self.erp_instance.ordres_fabrication)):
             # Utiliser anchor pour centrer le texte
-            self.tree.insert("", "end", values=(self.erp_instance.ordres[i], self.erp_instance.date[i], 
-                                                self.erp_instance.quantites[i], self.erp_instance.qty_producing[i]))
+            self.tree.insert("", "end", values=(self.erp_instance.ordres_fabrication[i], self.erp_instance.dates_ordres_fabrication[i], 
+                                                self.erp_instance.quantite_a_produire[i], self.erp_instance.qty_producing[i]))
 
     def update_table(self):
         # Effacer les éléments existants dans la Treeview
@@ -66,16 +66,16 @@ class ProductionPage(Frame):
             self.tree.delete(item)
 
         # Ajouter les nouvelles données obtenues à la Treeview après mise à jour
-        for i in range(len(self.erp_instance.ordres)):
-            self.tree.insert("", "end", values=(self.erp_instance.ordres[i], self.erp_instance.date[i], 
-                                                self.erp_instance.quantites[i], self.erp_instance.qty_producing[i]))
+        for i in range(len(self.erp_instance.ordres_fabrication)):
+            self.tree.insert("", "end", values=(self.erp_instance.ordres_fabrication[i], self.erp_instance.dates_ordres_fabrication[i], 
+                                                self.erp_instance.quantite_a_produire[i], self.erp_instance.qty_producing[i]))
 
     def sort_column(self, col, reverse):
         # Obtenez les données actuelles de la Treeview
         data = [(self.tree.set(child, "Numéro d'OF"), self.tree.set(child, "Date"),
                 self.tree.set(child, "Quantité à réaliser"), self.tree.set(child, "Quantité en production"))
                 for child in self.tree.get_children("")]
-
+        
         # Triez les données en fonction de la colonne spécifiée
         col_index = {"Numéro d'OF": 0, "Date": 1, "Quantité à réaliser": 2, "Quantité en production": 3}[col]
         data.sort(key=lambda x: x[col_index], reverse=reverse)
@@ -83,7 +83,7 @@ class ProductionPage(Frame):
         # Effacez les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
-
+        
         # Ajoutez les données triées à la Treeview
         for item in data:
             self.tree.insert("", "end", values=item)
