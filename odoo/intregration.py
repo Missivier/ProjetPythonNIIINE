@@ -128,6 +128,15 @@ class ERP:
             print("Référence interne :", self.reference_interne[0])
         if self.stock_disponible:
             print("Stock disponible :", self.stock_disponible[0])
+        if self.ordres_fabrication:
+            print("Nom des articles :", self.ordres_fabrication[0])
+        if self.dates_ordres_fabrication:
+            print("Prix des articles :", self.dates_ordres_fabrication[0])
+        if self.quantite_a_produire:
+            print("Référence interne :", self.quantite_a_produire[0])
+        if self.qty_producing:
+            print("Stock disponible :", self.qty_producing[0])
+ 
  
  
 if __name__ == "__main__":
@@ -137,8 +146,11 @@ if __name__ == "__main__":
     erp_instance.obtenir_informations_produits()
     
     erp_instance.connexion(username='alexandre', password='jslpdl')
+
     print("--------------------------")
- 
+    
+    erp_instance.obtenir_informations_ordres_fabrication()
+
     erp_instance.obtenir_informations_produits()
  
     erp_instance.afficher_variables()
