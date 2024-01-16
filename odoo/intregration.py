@@ -72,6 +72,7 @@ class ERP:
             dates = []
             quantites = []
             qty_producing = []
+            
 
             for product in products:
                 ordres.append(product['name'])
@@ -154,11 +155,9 @@ if __name__ == "__main__":
  
     erp_instance.afficher_variables()
  
+
+    erp_instance.obtenir_informations_ordres_fabrication()
     ordres, dates, quantites, qty_producing = erp_instance.obtenir_informations_ordres_fabrication()
  
-    # Utilisez ces informations comme nécessaire
-    print("Ordres de fabrication :", ordres)
-    print("Dates des ordres de fabrication :", dates)
-    print("Quantités à produire :", quantites)
-    print("Quantités en cours de production :", qty_producing)
- 
+    #Utilisez ces informations comme nécessaire
+    
