@@ -1,8 +1,9 @@
 import sys
 sys.path.insert(0,'odoo')
 from intregration import ERP
+from PIL import Image, ImageTk
  
-from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
+from tkinter import Tk, Label, Entry, Button, Frame, ttk
 import tkinter as tk
  
  
@@ -24,6 +25,18 @@ class Application(Tk):
         # Creation Background fentre client
         self.background_frame = Frame(self, bg="#DAD7D7")
         self.background_frame.place(relwidth=1, relheight=1)
+
+        # Création d'un Canvas pour l'image de fond
+        self.canvas = tk.Canvas(self.background_frame, width=self.screen_width, height=self.screen_height)
+        self.canvas.pack()
+
+        # Charger l'image de fond
+        background_image = Image.open("/home/user/Documents/ProjetPythonNIIINE/Application_client/Image/v915-wit-011.jpg")
+        background_image = ImageTk.PhotoImage(background_image)
+
+        # Ajouter l'image au Canvas
+        self.canvas.create_image(0, 0, image=background_image)
+
  
         # Création d'un bouton pour quitter l'application
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
