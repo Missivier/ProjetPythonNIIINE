@@ -146,11 +146,11 @@ if __name__ == "__main__":
     erp_instance.obtenir_informations_produits()
     
     erp_instance.connexion(username='alexandre', password='jslpdl')
- 
+
     print("--------------------------")
     
     erp_instance.obtenir_informations_ordres_fabrication()
- 
+
     erp_instance.obtenir_informations_produits()
  
     erp_instance.afficher_variables()
