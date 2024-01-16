@@ -142,15 +142,26 @@ class Application(Tk):
         self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
         self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
         #Creation bouton pour aller page prod
-        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.pageProd)
+        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Boutton_retour()])
         self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
         #Creation bouton pour aller page logistique
-        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.pageLog)
+        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Boutton_retour()])
         self.Button_logis.place(relx=0.5, rely=0.5, anchor="center")
         #Creation bouton pour aller page commerce
-        self.Button_commerce = tk.Button(self.page_admin_frame, text="Commerce",fg="black", bg="#DAD7D7", font=("Arial", 20),command=self.show_commerce_page_admin)
+        self.Button_commerce = tk.Button(self.page_admin_frame, text="Commerce",fg="black", bg="#DAD7D7", font=("Arial", 20),command=lambda: [self.pageVente(), self.Boutton_retour()])
         self.Button_commerce.place(relx=0.7, rely=0.5, anchor="center")
 
+    def pageVente(self):
+        print("ok")
+
+    def Boutton_retour(self):
+        #Creation bouton pour aller retourner menu admin
+        self.Button_retour = tk.Button(self, text="Retour",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
+        self.Button_retour.place(relx=0.1, rely=0.9, anchor="sw")
+
+    def Retour(self):
+        #Fonction pour revenir sur le menu admin
+        self.Button_retour.place_forget()
 
     def affichage_tableau(self):
         # Utiliser l'instance de la classe ERP
