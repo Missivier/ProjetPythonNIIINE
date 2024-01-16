@@ -4,7 +4,7 @@ from intregration import ERP
  
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
 import tkinter as tk
-from view import HomeView
+
  
  
 class Application(Tk):
