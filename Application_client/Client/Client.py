@@ -108,15 +108,15 @@ class Application(Tk):
         self.login_frame.grid_forget()
          # Supprime le bouton Quitter
         self.bouton_quit.grid_forget()
-
+ 
         self.page_log_frame = tk.Frame(self)
         self.page_log_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
-
+ 
         self.label = Label(self, text="Logistique", font=('Helvetica', 24))
         self.label.pack(pady=10)
  
         # Création de la grille pour afficher les articles
-        self.tree = ttk.Treeview(self, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
+        self.tree = ttk.Treeview(self, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
  
         # Configuration des en-têtes de colonnes
         self.tree.heading("Nom", text="Nom", command=lambda: self.sort_column_log("Nom", False))
@@ -137,9 +137,26 @@ class Application(Tk):
  
         # Binding de l'événement de clic
         self.tree.bind("<ButtonRelease-1>", self.show_image_log)
-        # Ajouter un bouton pour activer la modification du stock
-       # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
-        #self.modify_stock_button.pack(pady=10)
+ 
+        # Ajoutez la variable self.sort_order pour suivre l'état du tri (ascendant ou descendant)
+        self.sort_order = {}
+ 
+        # Configuration des en-têtes de colonnes
+        columns = ("Nom", "Prix", "Référence Interne", "Stock Disponible")
+        for col in columns:
+            self.sort_order[col] = True  # Initialisation à True pour tri ascendant par défaut
+            self.tree.heading(col, text=col, command=lambda c=col: self.sort_column_log(c))
+ 
+        # Ajout de la case d'entrée pour la quantité d'articles à retirer
+        self.stock_entry_label = Label(self.page_log_frame, text="Affectation stock:")
+        self.stock_entry_label.place(relx=0.5, rely=0.4, anchor='center')
+ 
+        self.stock_entry = Entry(self.page_log_frame)
+        self.stock_entry.place(relx=0.49, rely=0.41)
+ 
+        # Ajout du bouton Valider
+        self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
+        self.validate_stock_button.place(relx=0.55, rely=0.4, anchor='center')
  
     def pageAdmin(self):
  
@@ -187,7 +204,7 @@ class Application(Tk):
         #Fonction pour revenir sur le menu admin
         self.Button_retour.place_forget()
 
-    def affichage_tableau(self):
+    def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_produits()
  
@@ -206,7 +223,7 @@ class Application(Tk):
             self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
                                                 self.erp.reference_interne[i], self.erp.stock_disponible[i]))
  
-    def update_table(self):
+    def update_table_prod(self):
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -261,7 +278,7 @@ class Application(Tk):
  
  
  
-    def affichage_tableau_log(self):
+    def affichage_tableau_prod(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_ordres_fabrication()
  
