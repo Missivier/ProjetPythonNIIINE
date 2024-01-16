@@ -15,10 +15,12 @@ class Application(Tk):
         self.entry_password = tk.StringVar()
 
         #Creation de la page Client
-        self.title("Application CyberVest")
-        self.screen_width = self.winfo_screenwidth()
-        self.screen_height = self.winfo_screenheight()
-        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
+        self.title("Application CyberVest")#Titre
+        self.screen_width = self.winfo_screenwidth()#Largeur fenetre
+        self.screen_height = self.winfo_screenheight()#Longueur fenetre
+        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")#Equation des L*l
+
+        # Creation Background fentre client
         self.background_frame = Frame(self, bg="#DAD7D7")
         self.background_frame.place(relwidth=1, relheight=1)
  
@@ -37,7 +39,7 @@ class Application(Tk):
 
         #Afficher La page de login
         self.login_page()
-
+#--------------------------------------------------------------------------------------------------------------------------------------------
     #Fonction Login
     def login(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
