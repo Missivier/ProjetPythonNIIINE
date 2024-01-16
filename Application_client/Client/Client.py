@@ -5,7 +5,7 @@ from intregration import ERP
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
 import tkinter as tk
 from view import HomeView
-from Production import ProductionPage
+
 
 class Application(Tk):
     def __init__(self):
@@ -59,7 +59,7 @@ class Application(Tk):
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.pageProd()
         else:
-            ProductionPage()
+            self.pageLog()
 
     def pageProd(self):
 
@@ -98,6 +98,48 @@ class Application(Tk):
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
+
+
+    def pageLog(self):
+
+
+
+        # Supprime les widgets de la page de connexion
+        self.login_frame.grid_forget()
+ 
+ 
+        # Supprime le bouton Quitter
+        self.bouton_quit.grid_forget()
+
+        
+        self.label = Label(self, text="Logistique", font=('Helvetica', 24))
+        self.label.pack(pady=10)
+
+        # Création de la grille pour afficher les articles
+        self.tree = ttk.Treeview(self, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
+ 
+        # Configuration des en-têtes de colonnes
+        self.tree.heading("Numéro d'OF", text="Numéro d'OF", command=lambda: self.sort_column("Numéro d'OF", False))
+        self.tree.heading("Date", text="Date", command=lambda: self.sort_column("Date", False))
+        self.tree.heading("Quantité à réaliser", text="Quantité à réaliser", command=lambda: self.sort_column("Quantité à réaliser", False))
+        self.tree.heading("Quantité en production", text="Quantité en production", command=lambda: self.sort_column("Quantité en production", False))
+ 
+        # Ajout des colonnes avec une largeur augmentée de 50%
+        self.tree.column("Numéro d'OF", width=int(150 * 1.5), anchor="center")
+        self.tree.column("Date", width=int(150 * 1.5), anchor="center")
+        self.tree.column("Quantité à réaliser", width=int(150 * 1.5), anchor="center")
+        self.tree.column("Quantité en production", width=int(150 * 1.5), anchor="center")
+
+        self.tree.pack()
+
+        # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
+        self.affichage_tableau()
+
+        # Ajouter un bouton pour activer la modification du stock
+       # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
+        #self.modify_stock_button.pack(pady=10)
+
+
 
 
     def affichage_tableau(self):
