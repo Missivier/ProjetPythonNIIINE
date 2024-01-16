@@ -71,6 +71,7 @@ class HomeView(Frame):
         self.validate_stock_button = Button(self, text="Valider", command=self.update_stock)
         self.validate_stock_button.grid(row=3, column=2, padx=5, pady=5, sticky="e")
 
+
     def affichage_tableau(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_produits()
