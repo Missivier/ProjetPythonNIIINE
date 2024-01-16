@@ -27,7 +27,8 @@ class Application(Tk):
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
 
-
+        self.erp = ERP("db_cybervest")
+        self.ProdPage = ProductionPage()
 
         self.login_page()
 
@@ -55,11 +56,8 @@ class Application(Tk):
 
     def login(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
-        erp = ERP("db_cybervest", self.entry_username.get(), self.entry_password.get())
-        erp.connexion()
-        self.uid = erp.uid
-
-        if erp.uid == 2:
+        
+        if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.show_page(ProductionPage)
         else:
             ProductionPage()

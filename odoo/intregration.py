@@ -3,30 +3,31 @@ import base64
 from datetime import datetime, timedelta
  
 class ERP:
-    def __init__(self, db_name=None, username=None, password=None):
+    def __init__(self, db_name=None, ):
         self.odoo_ipaddr = "172.31.11.2"
         self.odoo_port = "8069"
         self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
         self.db_name = db_name
-        self.username = username
-        self.password = password
+        self.password = ""
+        self.common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common', allow_none=True)
+        self.models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object', allow_none=True)
+        self.uid = 0
+
         self.nom_article = []
         self.prix_article = []
         self.reference_interne = []
         self.stock_disponible = []
-        self.common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common', allow_none=True)
-        self.models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object', allow_none=True)
-        self.uid = 0
         self.images_stock = []
         self.ordres_fabrication = []
         self.dates_ordres_fabrication = []
         self.quantite_a_produire = []
         self.qty_producing = []
  
-    def connexion(self):
-        self.uid = self.common.authenticate(self.db_name, self.username, self.password, {})
+    def connexion(self, username=None , password=None):
+        self.uid = self.common.authenticate(self.db_name, username, password, {})
         if self.uid:
-            print('Connexion réussie. UID utilisateur:', self.uid)
+            print('Connexion réussie. UID utilisateur:', self.uid) 
+            self.password = password
         else:
             print('Échec de la connexion.')
         return self.uid
@@ -136,20 +137,24 @@ class ERP:
         if self.stock_disponible:
             print("Stock disponible :", self.stock_disponible[0])
  
-    def run(self):
-        self.connexion()
-        self.obtenir_informations_produits()
-        self.afficher_variables()
- 
-        # Obtention des informations des ordres de fabrication
-        ordres, dates, quantites, qty_producing = self.obtenir_informations_ordres_fabrication()
- 
-        # Utilisez ces informations comme nécessaire
-        print("Ordres de fabrication :", ordres)
-        print("Dates des ordres de fabrication :", dates)
-        print("Quantités à produire :", quantites)
-        print("Quantités en cours de production :", qty_producing)
  
 if __name__ == "__main__":
-    erp_instance = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
-    erp_instance.run()
+    erp_instance = ERP(db_name='db_cybervest')
+
+    # tentative requete avant connexion     
+    erp_instance.obtenir_informations_produits()
+    
+    erp_instance.connexion(username='alexandre', password='jslpdl')
+    print("--------------------------")
+
+    erp_instance.obtenir_informations_produits()
+
+    erp_instance.afficher_variables()
+
+    ordres, dates, quantites, qty_producing = erp_instance.obtenir_informations_ordres_fabrication()
+
+    # Utilisez ces informations comme nécessaire
+    print("Ordres de fabrication :", ordres)
+    print("Dates des ordres de fabrication :", dates)
+    print("Quantités à produire :", quantites)
+    print("Quantités en cours de production :", qty_producing)
