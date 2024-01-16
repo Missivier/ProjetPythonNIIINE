@@ -5,7 +5,7 @@ from intregration import ERP
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
 import tkinter as tk
 from view import HomeView
-from Production import ProductionPage
+ 
  
 class Application(Tk):
     def __init__(self):
@@ -59,7 +59,7 @@ class Application(Tk):
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.pageProd()
         else:
-            ProductionPage()
+            self.pageLog()
  
     def pageProd(self):
  
@@ -96,24 +96,92 @@ class Application(Tk):
         self.affichage_tableau()
  
         # Ajouter un bouton pour activer la modification du stock
-        self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
-        self.modify_stock_button.pack(pady=10)
+       # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
+        #self.modify_stock_button.pack(pady=10)
+ 
+ 
+    def pageLog(self):
+ 
+        # Supprime les widgets de la page de connexion
+        self.login_frame.grid_forget()
+ 
+ 
+        # Supprime le bouton Quitter
+        self.bouton_quit.grid_forget()
+ 
+        
+        self.label = Label(self, text="Bienvenue sur la page d'accueil !", font=('Helvetica', 24))
+        self.label.grid(row=0, column=0, pady=10, columnspan=5)
+
+        # Création de la grille pour afficher les articles
+        self.tree = ttk.Treeview(self, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
+ 
+        # Configuration des en-têtes de colonnes
+        self.tree.heading("Nom", text="Nom", command=lambda: self.sort_column("Nom", False))
+        self.tree.heading("Prix", text="Prix", command=lambda: self.sort_column("Prix", False))
+        self.tree.heading("Référence Interne", text="Référence Interne", command=lambda: self.sort_column("Référence Interne", False))
+        self.tree.heading("Stock Disponible", text="Stock Disponible", command=lambda: self.sort_column("Stock Disponible", False))
+ 
+        # Ajout des colonnes avec une largeur augmentée de 50%
+        self.tree.column("Nom", width=int(150 * 1.5), anchor="center")
+        self.tree.column("Prix", width=int(100 * 1.5), anchor="center")
+        self.tree.column("Référence Interne", width=int(100 * 1.5), anchor="center")
+        self.tree.column("Stock Disponible", width=int(100 * 1.5), anchor="center")
+ 
+        # Utilisez grid au lieu de pack
+        self.tree.grid(row=1, column=0, padx=10, pady=10, columnspan=5)
+ 
+        # Ajout d'une instance de la classe ERP comme attribut de la classe HomeView
+        self.erp_instance = ERP()
+ 
+        # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
+        self.affichage_tableau()
+ 
+        # Binding de l'événement de clic
+        self.tree.bind("<ButtonRelease-1>", self.show_image)
+ 
+        # Ajoutez la variable self.sort_order pour suivre l'état du tri (ascendant ou descendant)
+        self.sort_order = {}
+
+        # Configuration des en-têtes de colonnes
+        columns = ("Nom", "Prix", "Référence Interne", "Stock Disponible")
+        for col in columns:
+            self.sort_order[col] = True  # Initialisation à True pour tri ascendant par défaut
+            self.tree.heading(col, text=col, command=lambda c=col: self.sort_column(c))
+
+        # Ajout de la case d'entrée pour la quantité d'articles à retirer
+        self.stock_entry_label = Label(self, text="Affectation stock:")
+        self.stock_entry_label.grid(row=3, column=0, padx=5, pady=5)
+
+        self.stock_entry = Entry(self)
+        self.stock_entry.grid(row=3, column=1, padx=5, pady=5)
+
+        # Ajout du bouton Valider
+        self.validate_stock_button = Button(self, text="Valider", command=self.update_stock)
+        self.validate_stock_button.grid(row=3, column=2, padx=5, pady=5, sticky="e")
+ 
+ 
  
  
     def affichage_tableau(self):
         # Utiliser l'instance de la classe ERP
-        self.erp.obtenir_informations_ordres_fabrication(self)
+        self.erp.obtenir_informations_produits()
+ 
+        # Afficher les valeurs récupérées pour le débogage
+        print("Nom des articles:", self.erp.nom_article)
+        print("Prix des articles:", self.erp.prix_article)
+        print("Référence Interne:", self.erp.reference_interne)
+        print("Stock Disponible:", self.erp.stock_disponible)
  
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
  
         # Ajouter les nouvelles données obtenues à la Treeview
-        for i in range(len(self.erp.ordres_fabrication)):
+        for i in range(len(self.erp.nom_article)):
             # Utiliser anchor pour centrer le texte
-            self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
-                                                self.erp.quantite_a_produire[i], self.erp.qty_producing[i]))
- 
+            self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
+                                                self.erp.reference_interne[i], self.erp.stock_disponible[i]))
  
     def update_table(self):
         # Effacer les éléments existants dans la Treeview
@@ -122,8 +190,8 @@ class Application(Tk):
  
         # Ajouter les nouvelles données obtenues à la Treeview après mise à jour
         for i in range(len(self.erp_instance.ordres_fabrication)):
-            self.tree.insert("", "end", values=(self.erp_instance.ordres_fabrication[i], self.erp_instance.dates_ordres_fabrication[i],
-                                                self.erp_instance.quantite_a_produire[i], self.erp_instance.qty_producing[i]))
+            self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
+                                                self.erp.quantite_a_produire[i], self.erp.qty_producing[i]))
  
     def sort_column(self, col, reverse):
         # Obtenez les données actuelles de la Treeview

@@ -1,8 +1,9 @@
 import xmlrpc.client
-from datetime import datetime
+import base64
+from datetime import datetime, timedelta
  
 class ERP:
-    def __init__(self, db_name=None):
+    def __init__(self, db_name=None, ):
         self.odoo_ipaddr = "172.31.11.2"
         self.odoo_port = "8069"
         self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
@@ -22,7 +23,7 @@ class ERP:
         self.quantite_a_produire = []
         self.qty_producing = []
  
-    def connexion(self, username=None, password=None):
+    def connexion(self, username=None , password=None):
         self.uid = self.common.authenticate(self.db_name, username, password, {})
         if self.uid:
             print('Connexion réussie. UID utilisateur:', self.uid)
@@ -59,11 +60,13 @@ class ERP:
         qty_producing = []
  
         if self.uid:
+            print('je suis la ')
             mo_ids = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
                 'mrp.production', 'search',
                 [[['state', 'not in', ['cancel', 'done']]]]
             )
+ 
             mos = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
                 'mrp.production', 'read', [mo_ids],
@@ -75,11 +78,14 @@ class ERP:
                 dates_ordres_fabrication.append(mo['date_planned_start'])
                 quantite_a_produire.append(mo['product_qty'])
                 qty_producing.append(mo['qty_producing'])
+               
         else:
             print('Échec de la connexion à Odoo.')
  
-        return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
+            
  
+        return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
+    
     def modifier_stock_odoo(self, default_code, new_stock):
         if self.uid:
             product_id = self.models.execute_kw(
@@ -101,12 +107,7 @@ class ERP:
                     )
                     print(f"Stock mis à jour avec succès pour l'article avec le default_code '{default_code}'.")
                 else:
-                    self.models.execute_kw(
-                        self.db_name, self.uid, self.password,
-                        'stock.quant', 'create',
-                        [{'product_id': product_id[0], 'quantity': new_stock}]
-                    )
-                    print(f"Stock créé avec succès pour l'article avec le default_code '{default_code}'.")
+                    print(f"Le produit avec le default_code '{default_code}' n'a pas de stock.")
             else:
                 print(f"Le default_code '{default_code}' n'a pas été trouvé.")
         else:
@@ -145,9 +146,9 @@ class ERP:
 if __name__ == "__main__":
     erp_instance = ERP(db_name='db_cybervest')
  
-    # tentative requête avant connexion
+    # tentative requete avant connexion     
     erp_instance.obtenir_informations_produits()
- 
+    
     erp_instance.connexion(username='alexandre', password='jslpdl')
     print("--------------------------")
  
@@ -162,3 +163,4 @@ if __name__ == "__main__":
     print("Dates des ordres de fabrication :", dates)
     print("Quantités à produire :", quantites)
     print("Quantités en cours de production :", qty_producing)
+ 
