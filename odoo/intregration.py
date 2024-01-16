@@ -54,38 +54,25 @@ class ERP:
             print('Échec de la connexion à Odoo.')
  
     def obtenir_informations_ordres_fabrication(self):
-        ordres_fabrication = []
-        dates_ordres_fabrication = []
-        quantite_a_produire = []
-        qty_producing = []
- 
         if self.uid:
-            print('je suis la ')
-            mo_ids = self.models.execute_kw(
+            product_ids = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
-                'mrp.production', 'search',
+                'mrp.production', 'search', [[]], {}
                 [[['state', 'not in', ['cancel', 'done']]]]
             )
-            mos = self.models.execute_kw(
+            products = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
-                'mrp.production', 'read', [mo_ids],
+                'mrp.production', 'read', [product_ids],
                 {'fields': ['name', 'date_planned_start', 'product_qty', 'qty_producing']}
             )
  
-            for mo in mos:
-                ordres_fabrication.append(mo['name'])
-                dates_ordres_fabrication.append(mo['date_planned_start'])
-                quantite_a_produire.append(mo['product_qty'])
-                qty_producing.append(mo['qty_producing'])
-               
+            for product in products:
+                self.ordres_fabrication.append(product['name'])
+                self.dates_ordres_fabrication.append(product['list_price'])
+                self.quantite_a_produire.append(product['default_code'])
+                self.qty_producing.append(product['qty_available'])
         else:
-            print('Échec de la connexion à Odoo.')
-
-            
- 
-            
- 
-        return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
+            print('Échec de la connexion à Odoo.')            
     
     def modifier_stock_odoo(self, default_code, new_stock):
         if self.uid:
