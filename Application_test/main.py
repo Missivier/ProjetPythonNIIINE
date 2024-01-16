@@ -18,6 +18,10 @@ class Appli:
         self.root.attributes('-fullscreen', not self.root.attributes('-fullscreen'))
 
 if __name__ == "__main__":
+<<<<<<< HEAD
+    erp = ERP(db_name='db_cybervest') #username='alexandre', password='jslpdl') 
+=======
+>>>>>>> 4486606a39262938d3bdf768f4f4f0b2b6f465a7
     root = Tk()
     erp_instance = ERP(db_name='db_cybervest') #username='enzo', password='jslpdl')
     erp_instance.connexion(username='enzo', password='jslpdl')
