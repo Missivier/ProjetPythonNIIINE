@@ -32,6 +32,8 @@ class ERP:
             print('Échec de la connexion.')
         return self.uid
  
+
+    #logistique
     def obtenir_informations_produits(self):
         if self.uid:
             product_ids = self.models.execute_kw(
@@ -53,6 +55,7 @@ class ERP:
         else:
             print('Échec de la connexion à Odoo.')
  
+    #production
     def obtenir_informations_ordres_fabrication(self):
         if self.uid:
             product_ids = self.models.execute_kw(
