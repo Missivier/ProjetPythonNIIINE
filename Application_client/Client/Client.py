@@ -7,6 +7,7 @@ import tkinter as tk
  
  
 class Application(Tk):
+    #Création de l'environnement
     def __init__(self):
         super().__init__()
  
@@ -42,9 +43,9 @@ class Application(Tk):
 #--------------------------------------------------------------------------------------------------------------------------------------------
     #Fonction Login
     def login(self):
-        # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
+        # Gestion des connexions valides et faire appparaitre la page en conséquence
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
-            self.pageProd()
+            self.pageProd()#Affichage de la page production
             self.show_button_deconnexion()
             
         elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
