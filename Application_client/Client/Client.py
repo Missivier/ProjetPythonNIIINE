@@ -206,6 +206,9 @@ class Application(Tk):
     def Retour(self):
         #Fonction pour revenir sur le menu admin
         self.Button_retour.place_forget()
+        self.page_prod_frame.place_forget()
+        self.page_log_frame.place_forget()
+        self.login_page()
 
 
     def affichage_tableau_log(self):
