@@ -68,7 +68,6 @@ class Application(Tk):
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
         #Supprime page admin si afficher
- 
         
         self.label = Label(self, text="Production", font=('Helvetica', 24))
         self.label.pack(pady=10)
@@ -85,14 +84,13 @@ class Application(Tk):
         # Ajout des colonnes avec une largeur augmentée de 50%
         self.tree.column("Numéro d'OF", width=int(150 * 1.5), anchor="center")
         self.tree.column("Date", width=int(150 * 1.5), anchor="center")
-        self.tree.column("Quantité à réaliser", width=int(150 * 1.5), anchor="center")
         self.tree.column("Quantité en production", width=int(150 * 1.5), anchor="center")
- 
+        self.tree.column("Quantité à réaliser", width=int(150 * 1.5), anchor="center")
+
         self.tree.pack()
  
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
         self.affichage_tableau_log()
- 
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
@@ -174,7 +172,6 @@ class Application(Tk):
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
- 
         # Ajouter les nouvelles donné   es obtenues à la Treeview
         for i in range(len(self.erp.nom_article)):
             # Utiliser anchor pour centrer le texte
@@ -254,7 +251,7 @@ class Application(Tk):
         for i in range(len(self.erp.ordres_fabrication)):
             # Utiliser anchor pour centrer le texte
             self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
-                                                self.erp.quantite_a_produire[i], self.erp.qty_producing[i]))
+                                                self.erp.qty_producing[i], self.erp.quantite_a_produire[i]))
  
     def update_table(self):
         # Effacer les éléments existants dans la Treeview
