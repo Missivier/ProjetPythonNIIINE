@@ -57,19 +57,19 @@ class Application(Tk):
         
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.pageProd()
+        elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
+            self.pageAdmin()
+
         else:
             self.pageLog()
 
+
     def pageProd(self):
 
-
         # Supprime les widgets de la page de connexion
-        self.login_frame.grid_forget()
- 
- 
-        # Supprime le bouton Quitter
-        self.bouton_quit.grid_forget()
-
+        self.login_frame.place_forget()
+        #Supprime page admin si afficher
+        self.page_admin_frame.place_forget()
         
         self.label = Label(self, text="Production", font=('Helvetica', 24))
         self.label.pack(pady=10)
@@ -101,14 +101,11 @@ class Application(Tk):
 
     def pageLog(self):
 
-
         # Supprime les widgets de la page de connexion
-        self.login_frame.grid_forget()
- 
- 
-        # Supprime le bouton Quitter
-        self.bouton_quit.grid_forget()
-
+        self.login_frame.place_forget()
+        #Supprime page admin si afficher
+        self.page_admin_frame.place_forget()
+        
         
         self.label = Label(self, text="Logistique", font=('Helvetica', 24))
         self.label.pack(pady=10)
@@ -137,7 +134,22 @@ class Application(Tk):
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
 
+    def pageAdmin(self):
 
+        # Supprime les widgets de la page de connexion
+        self.login_frame.place_forget()
+        #Création de la page
+        self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
+        self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+        #Creation bouton pour aller page prod
+        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.pageProd)
+        self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
+        #Creation bouton pour aller page logistique
+        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.pageLog)
+        self.Button_logis.place(relx=0.5, rely=0.5, anchor="center")
+        #Creation bouton pour aller page commerce
+        self.Button_commerce = tk.Button(self.page_admin_frame, text="Commerce",fg="black", bg="#DAD7D7", font=("Arial", 20),command=self.show_commerce_page_admin)
+        self.Button_commerce.place(relx=0.7, rely=0.5, anchor="center")
 
 
     def affichage_tableau(self):
