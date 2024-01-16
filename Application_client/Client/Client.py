@@ -1,81 +1,164 @@
-import sys
-sys.path.insert(0,'odoo')
-from intregration import ERP
+import xmlrpc.client
+from datetime import datetime
 
-from tkinter import Tk, Label, Entry, Button, Frame, messagebox
-import tkinter as tk
-from view import HomeView
+class ERP:
+    def __init__(self, db_name=None):
+        self.odoo_ipaddr = "172.31.11.2"
+        self.odoo_port = "8069"
+        self.odoo_url = f'http://{self.odoo_ipaddr}:{self.odoo_port}'
+        self.db_name = db_name
+        self.password = ""
+        self.common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common', allow_none=True)
+        self.models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object', allow_none=True)
+        self.uid = 0
 
+        self.nom_article = []
+        self.prix_article = []
+        self.reference_interne = []
+        self.stock_disponible = []
+        self.images_stock = []
+        self.ordres_fabrication = []
+        self.dates_ordres_fabrication = []
+        self.quantite_a_produire = []
+        self.qty_producing = []
 
-# objet pour l'affichage de la page
+    def connexion(self, username=None, password=None):
+        self.uid = self.common.authenticate(self.db_name, username, password, {})
+        if self.uid:
+            print('Connexion réussie. UID utilisateur:', self.uid)
+            self.password = password
+        else:
+            print('Échec de la connexion.')
+        return self.uid
 
-class Application(Tk):
-    def __init__(self):
-        super().__init__()
+    def obtenir_informations_produits(self):
+        if self.uid:
+            product_ids = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'product.product', 'search', [[]], {}
+            )
+            products = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'product.product', 'read', [product_ids],
+                {'fields': ['name', 'list_price', 'default_code', 'qty_available', 'image_1920']}
+            )
 
-        # Créer les variables d'entrée
-        self.entry_username = tk.StringVar()
-        self.entry_password = tk.StringVar()
+            for product in products:
+                self.nom_article.append(product['name'])
+                self.prix_article.append(product['list_price'])
+                self.reference_interne.append(product['default_code'])
+                self.stock_disponible.append(product['qty_available'])
+                self.images_stock.append(product['image_1920'])
+        else:
+            print('Échec de la connexion à Odoo.')
 
-        self.title("Application CyberVest")
-        self.screen_width = self.winfo_screenwidth()
-        self.screen_height = self.winfo_screenheight()
-        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
+    def obtenir_informations_ordres_fabrication(self):
+        ordres_fabrication = []
+        dates_ordres_fabrication = []
+        quantite_a_produire = []
+        qty_producing = []
 
-        self.background_frame = tk.Frame(self, bg="#DAD7D7")
-        self.background_frame.place(relwidth=1, relheight=1)
+        if self.uid:
+            mo_ids = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'mrp.production', 'search',
+                [[['state', 'not in', ['cancel', 'done']]]]
+            )
+            mos = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'mrp.production', 'read', [mo_ids],
+                {'fields': ['name', 'date_planned_start', 'product_qty', 'qty_producing']}
+            )
 
-        # Création d'un bouton pour quitter l'application
-        self.bouton_quit = tk.Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
-        self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
+            for mo in mos:
+                ordres_fabrication.append(mo['name'])
+                dates_ordres_fabrication.append(mo['date_planned_start'])
+                quantite_a_produire.append(mo['product_qty'])
+                qty_producing.append(mo['qty_producing'])
+        else:
+            print('Échec de la connexion à Odoo.')
 
-        self.login_page()
+        return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
 
-    #Création de la page login
-    def login_page(self):
-     # Création de la frame pour la page login
-        self.login_frame = tk.Frame(self)
-        self.login_frame.place(relx=0.5, rely=0.5, anchor="center")
- 
-        label_username = tk.Label(self.login_frame, text="Nom d'utilisateur:")
-        label_password = tk.Label(self.login_frame, text="Mot de passe:")
- 
-        self.entry_username = tk.Entry(self.login_frame)
-        self.entry_password = tk.Entry(self.login_frame, show="*")
-        button_login = tk.Button(self.login_frame, text="Connexion", command=self.login)
- 
-        label_username.grid(row=0, column=0, padx=10, pady=10, sticky=tk.E)
-        label_password.grid(row=1, column=0, padx=10, pady=10, sticky=tk.E)
- 
-        self.entry_username.grid(row=0, column=1, padx=10, pady=10)
-        self.entry_password.grid(row=1, column=1, padx=10, pady=10)
-        button_login.grid(row=2, column=1, pady=20)
+    def modifier_stock_odoo(self, default_code, new_stock):
+        if self.uid:
+            product_id = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'product.product', 'search',
+                [[['default_code', '=', default_code]]]
+            )
+            if product_id:
+                quant_id = self.models.execute_kw(
+                    self.db_name, self.uid, self.password,
+                    'stock.quant', 'search',
+                    [[['product_id', '=', product_id[0]]]]
+                )
+                if quant_id:
+                    self.models.execute_kw(
+                        self.db_name, self.uid, self.password,
+                        'stock.quant', 'write',
+                        [quant_id, {'quantity': new_stock}]
+                    )
+                    print(f"Stock mis à jour avec succès pour l'article avec le default_code '{default_code}'.")
+                else:
+                    self.models.execute_kw(
+                        self.db_name, self.uid, self.password,
+                        'stock.quant', 'create',
+                        [{'product_id': product_id[0], 'quantity': new_stock}]
+                    )
+                    print(f"Stock créé avec succès pour l'article avec le default_code '{default_code}'.")
+            else:
+                print(f"Le default_code '{default_code}' n'a pas été trouvé.")
+        else:
+            print('Échec de la connexion à Odoo.')
 
-    def login(self):
-        # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
-        erp = ERP("db_cybervest", self.entry_username.get(), self.entry_password.get())
-        erp.connexion()
+    def modifier_quantite_en_cours_production(self, ordre_fabrication, new_qty_producing):
+        if self.uid:
+            mo_id = self.models.execute_kw(
+                self.db_name, self.uid, self.password,
+                'mrp.production', 'search',
+                [[['name', '=', ordre_fabrication]]]
+            )
+            if mo_id:
+                self.models.execute_kw(
+                    self.db_name, self.uid, self.password,
+                    'mrp.production', 'write',
+                    [mo_id, {'qty_producing': new_qty_producing}]
+                )
+                print(f"Quantité en cours de production mise à jour avec succès pour l'ordre de fabrication '{ordre_fabrication}'.")
+            else:
+                print(f"L'ordre de fabrication '{ordre_fabrication}' n'a pas été trouvé.")
+        else:
+            print('Échec de la connexion à Odoo.')
 
-    def show_page(self, page_class):
-        # Supprime les widgets de la page de connexion
-        self.username_label.destroy()
-        self.entry_username.destroy()
-        self.password_label.destroy()
-        self.entry_password.destroy()
-        self.login_button.destroy()
+    def afficher_variables(self):
+        if self.nom_article:
+            print("Nom des articles :", self.nom_article[0])
+        if self.prix_article:
+            print("Prix des articles :", self.prix_article[0])
+        if self.reference_interne:
+            print("Référence interne :", self.reference_interne[0])
+        if self.stock_disponible:
+            print("Stock disponible :", self.stock_disponible[0])
 
-        # Supprime le bouton Quitter
-        self.bouton_quit.destroy()
-
-        # Crée une instance de la nouvelle classe
-        page_instance = page_class(self)
-
-        # Affiche la nouvelle page
-        page_instance.pack(fill="both", expand=True)
-
-    def show_error(self, title, message):
-        messagebox.showerror(title, message)
 
 if __name__ == "__main__":
-    app = Application()
-    app.mainloop()
+    erp_instance = ERP(db_name='db_cybervest')
+
+    # tentative requête avant connexion
+    erp_instance.obtenir_informations_produits()
+
+    erp_instance.connexion(username='alexandre', password='jslpdl')
+    print("--------------------------")
+
+    erp_instance.obtenir_informations_produits()
+
+    erp_instance.afficher_variables()
+
+    ordres, dates, quantites, qty_producing = erp_instance.obtenir_informations_ordres_fabrication()
+
+    # Utilisez ces informations comme nécessaire
+    print("Ordres de fabrication :", ordres)
+    print("Dates des ordres de fabrication :", dates)
+    print("Quantités à produire :", quantites)
+    print("Quantités en cours de production :", qty_producing)

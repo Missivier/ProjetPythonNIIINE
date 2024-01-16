@@ -125,13 +125,13 @@ class ERP:
 
     def afficher_variables(self):
         if self.nom_article:
-            print("Nom des articles :", self.nom_article[0])
+            print("Nom des articles :", self.nom_article[4])
         if self.prix_article:
-            print("Prix des articles :", self.prix_article[0])
+            print("Prix des articles :", self.prix_article[4])
         if self.reference_interne:
-            print("Référence interne :", self.reference_interne[0])
+            print("Référence interne :", self.reference_interne[4])
         if self.stock_disponible:
-            print("Stock disponible :", self.stock_disponible[0])
+            print("Stock disponible :", self.stock_disponible[4])
 
     def run(self):
         self.connexion()
@@ -147,3 +147,6 @@ class ERP:
         print("Quantités à produire :", quantites)
         print("Quantités en cours de production :", qty_producing)
 
+if __name__ == "__main__":
+    erp_instance = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
+    erp_instance.run()
