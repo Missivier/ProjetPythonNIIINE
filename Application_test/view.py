@@ -40,8 +40,6 @@ class HomeView(Frame):
         # Utilisez grid au lieu de pack
         self.tree.grid(row=1, column=0, padx=10, pady=10, columnspan=5)
  
-        # Ajout d'une instance de la classe ERP comme attribut de la classe HomeView
-        self.erp = ERP()
  
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
         self.affichage_tableau()

@@ -18,7 +18,7 @@ class Appli:
         self.root.attributes('-fullscreen', not self.root.attributes('-fullscreen'))
 
 if __name__ == "__main__":
-    erp = ERP(db_name='db_cybervest', username='alexandre', password='jslpdl') 
+    erp = ERP(db_name='db_cybervest') #username='alexandre', password='jslpdl') 
     root = Tk()
     app = Appli(root)
     root.mainloop()

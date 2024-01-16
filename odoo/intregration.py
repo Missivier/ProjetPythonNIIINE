@@ -60,11 +60,13 @@ class ERP:
         qty_producing = []
  
         if self.uid:
+            print('je suis la ')
             mo_ids = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
                 'mrp.production', 'search',
                 [[['state', 'not in', ['cancel', 'done']]]]
             )
+
             mos = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
                 'mrp.production', 'read', [mo_ids],
@@ -76,8 +78,11 @@ class ERP:
                 dates_ordres_fabrication.append(mo['date_planned_start'])
                 quantite_a_produire.append(mo['product_qty'])
                 qty_producing.append(mo['qty_producing'])
+               
         else:
             print('Échec de la connexion à Odoo.')
+
+            
  
         return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
     
