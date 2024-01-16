@@ -2,7 +2,8 @@ from tkinter import Frame, Label, Button, ttk, Tk, Entry
 import sys
 sys.path.insert(0, 'odoo')
 from intregration import ERP
- 
+#==============================================================================================================================================
+#==============================================================================================================================================
 class BaseView(Tk):
     """Classe de base pour les vues."""
     def __init__(self, **kwargs):
@@ -15,7 +16,8 @@ class BaseView(Tk):
  
     def end_fullscreen(self, event=None):
         self.attributes('-fullscreen', False)
- 
+#==============================================================================================================================================
+#==============================================================================================================================================
 class HomeView(Frame):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
@@ -78,7 +80,7 @@ class HomeView(Frame):
         print("Prix des articles:", self.erp.prix_article)
         print("Référence Interne:", self.erp.reference_interne)
         print("Stock Disponible:", self.erp.stock_disponible)
-
+ 
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -187,7 +189,6 @@ class HomeView(Frame):
             image_label = Label(self, image=img)
             image_label.photo = img
             image_label.pack(side="right", padx=10, pady=10, fill="both", expand=True)
- 
  
     def get_article_index(self, article_name):
         # Fonction utilitaire pour récupérer l'index de l'article dans self.erp_instance.images_stock
