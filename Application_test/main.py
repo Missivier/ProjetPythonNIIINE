@@ -19,6 +19,7 @@ class Appli:
 
 if __name__ == "__main__":
     root = Tk()
-    erp = ERP(db_name='db_cybervest', username='enzo', password='jslpdl')
+    erp_instance = ERP(db_name='db_cybervest') #username='enzo', password='jslpdl')
+    erp_instance.connexion(username='enzo', password='jslpdl')
     app = Appli(root)
     root.mainloop()
