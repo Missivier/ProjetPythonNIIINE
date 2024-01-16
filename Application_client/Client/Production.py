@@ -36,7 +36,7 @@ class ProductionPage(Frame):
 
         self.tree.pack()
 
-        # Ajout d'une instance de la classe ERP comme attribut de la classe HomeView
+        # Ajout d'une instance de la classe ERP comme attribut de la classe ProductionPage
         self.erp_instance = ERP()
 
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
