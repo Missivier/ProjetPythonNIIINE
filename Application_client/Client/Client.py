@@ -187,7 +187,7 @@ class Application(Tk):
         #Fonction pour revenir sur le menu admin
         self.Button_retour.place_forget()
 
-    def affichage_tableau(self):
+    def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_produits()
  
@@ -330,7 +330,7 @@ class Application(Tk):
  
         self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-    def update_stock_log(self):
+    def update_stock_prod(self):
         # Récupération de la quantité saisie dans la case d'entrée
         quantite = self.stock_entry.get()
 
