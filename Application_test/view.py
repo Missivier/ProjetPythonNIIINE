@@ -2,7 +2,8 @@ from tkinter import Frame, Label, Button, ttk, Tk, Entry
 import sys
 sys.path.insert(0, 'odoo')
 from intregration import ERP
- 
+#==============================================================================================================================================
+#==============================================================================================================================================
 class BaseView(Tk):
     """Classe de base pour les vues."""
     def __init__(self, **kwargs):
@@ -15,7 +16,8 @@ class BaseView(Tk):
  
     def end_fullscreen(self, event=None):
         self.attributes('-fullscreen', False)
- 
+#==============================================================================================================================================
+#==============================================================================================================================================
 class HomeView(Frame):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
@@ -70,23 +72,23 @@ class HomeView(Frame):
 
     def affichage_tableau(self):
         # Utiliser l'instance de la classe ERP
-        self.erp.obtenir_informations_produits()
+        self.erp_instance.obtenir_informations_produits()
 
         # Afficher les valeurs récupérées pour le débogage
-        print("Nom des articles:", self.erp.nom_article)
-        print("Prix des articles:", self.erp.prix_article)
-        print("Référence Interne:", self.erp.reference_interne)
-        print("Stock Disponible:", self.erp.stock_disponible)
-
+        print("Nom des articles:", self.erp_instance.nom_article)
+        print("Prix des articles:", self.erp_instance.prix_article)
+        print("Référence Interne:", self.erp_instance.reference_interne)
+        print("Stock Disponible:", self.erp_instance.stock_disponible)
+ 
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
 
         # Ajouter les nouvelles données obtenues à la Treeview
-        for i in range(len(self.erp.nom_article)):
+        for i in range(len(self.erp_instance.nom_article)):
             # Utiliser anchor pour centrer le texte
-            self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
-                                                self.erp.reference_interne[i], self.erp.stock_disponible[i]))
+            self.tree.insert("", "end", values=(self.erp_instance.nom_article[i], self.erp_instance.prix_article[i],
+                                                self.erp_instance.reference_interne[i], self.erp_instance.stock_disponible[i]))
             
     def update_table(self):
         # Effacer les éléments existants dans la Treeview
@@ -94,9 +96,9 @@ class HomeView(Frame):
             self.tree.delete(item)
  
         # Ajouter les nouvelles données obtenues à la Treeview après mise à jour
-        for i in range(len(self.erp.nom_article)):
-            self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
-                                                self.erp.reference_interne[i], self.erp.stock_disponible[i]))
+        for i in range(len(self.erp_instance.nom_article)):
+            self.tree.insert("", "end", values=(self.erp_instance.nom_article[i], self.erp_instance.prix_article[i],
+                                                self.erp_instance.reference_interne[i], self.erp_instance.stock_disponible[i]))
  
     def sort_column(self, col):
         # Obtenez l'état actuel du tri pour la colonne spécifiée
@@ -145,7 +147,7 @@ class HomeView(Frame):
         nom_article = self.tree.item(item_selectionne, "values")[0]
 
         # Mise à jour du stock dans Odoo
-        succes = self.erp.update_odoo_stock(nom_article, quantite)
+        succes = self.erp_instance.update_odoo_stock(nom_article, quantite)
 
         if succes:
             # Affichage d'un message de confirmation dans le terminal
@@ -171,7 +173,7 @@ class HomeView(Frame):
         article_index = self.get_article_index(article_name)
  
         # Récupération du chemin de l'image associée à l'article
-        image_path = self.erp.images_stock[article_index]
+        image_path = self.erp_instance.images_stock[article_index]
  
         # Supprimer l'ancien Label s'il existe
         for widget in self.grid_slaves():
@@ -187,10 +189,9 @@ class HomeView(Frame):
             image_label.photo = img
             image_label.pack(side="right", padx=10, pady=10, fill="both", expand=True)
  
- 
     def get_article_index(self, article_name):
         # Fonction utilitaire pour récupérer l'index de l'article dans self.erp_instance.images_stock
-        for i, article in enumerate(self.erp.images_stock):
+        for i, article in enumerate(self.erp_instance.images_stock):
             if article["name"] == article_name:
                 return i
         return -1  # Retourne -1 si l'article n'est pas trouvé
