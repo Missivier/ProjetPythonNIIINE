@@ -72,13 +72,15 @@ class Application(Tk):
  
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
-        #Supprime page admin si afficher
-        
-        self.label = Label(self, text="Production", font=('Helvetica', 24))
+        #Création de la page
+        self.page_prod_frame = tk.Frame(self,bg="#DAD7D7")
+        self.page_prod_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+         
+        self.label = Label(self.page_prod_frame, text="Production", font=('Helvetica', 24))
         self.label.pack(pady=10)
  
         # Création de la grille pour afficher les articles
-        self.tree = ttk.Treeview(self, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
+        self.tree = ttk.Treeview(self.page_prod_frame, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
  
         # Configuration des en-têtes de colonnes
         self.tree.heading("Numéro d'OF", text="Numéro d'OF", command=lambda: self.sort_column("Numéro d'OF", False))
@@ -347,7 +349,7 @@ class Application(Tk):
  
         self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-    def update_stock_prod(self):
+    def update_stock_log(self):
         # Récupération de la quantité saisie dans la case d'entrée
         quantite = self.stock_entry.get()
 
