@@ -1,36 +1,35 @@
 import sys
 sys.path.insert(0,'odoo')
 from intregration import ERP
-
+ 
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
 import tkinter as tk
 from view import HomeView
-
-
+ 
+ 
 class Application(Tk):
     def __init__(self):
         super().__init__()
-
+ 
         # Créer les variables d'entrée
         self.entry_username = tk.StringVar()
         self.entry_password = tk.StringVar()
-
+ 
         self.title("Application CyberVest")
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
         self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
-
+ 
         self.background_frame = Frame(self, bg="#DAD7D7")
         self.background_frame.place(relwidth=1, relheight=1)
-
+ 
         # Création d'un bouton pour quitter l'application
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
-
+ 
         self.erp = ERP("db_cybervest")
-
         self.login_page()
-
+ 
     #Création de la page login
     def login_page(self):
      # Création de la frame pour la page login
@@ -50,9 +49,9 @@ class Application(Tk):
         self.entry_username.grid(row=0, column=1, padx=10, pady=10)
         self.entry_password.grid(row=1, column=1, padx=10, pady=10)
         button_login.grid(row=2, column=1, pady=20)
-
+ 
         
-
+ 
     def login(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
         
@@ -101,7 +100,6 @@ class Application(Tk):
 
 
     def pageLog(self):
-
 
 
         # Supprime les widgets de la page de connexion
@@ -207,6 +205,81 @@ class Application(Tk):
 
 
 
+        self.stock_entry = Entry(self)
+        self.stock_entry.grid(row=3, column=1, padx=5, pady=5)
+
+        # Ajout du bouton Valider
+        self.validate_stock_button = Button(self, text="Valider", command=self.update_stock)
+        self.validate_stock_button.grid(row=3, column=2, padx=5, pady=5, sticky="e")
+ 
+ 
+ 
+ 
+    def affichage_tableau(self):
+        # Utiliser l'instance de la classe ERP
+        self.erp.obtenir_informations_produits()
+ 
+        # Afficher les valeurs récupérées pour le débogage
+        print("Nom des articles:", self.erp.nom_article)
+        print("Prix des articles:", self.erp.prix_article)
+        print("Référence Interne:", self.erp.reference_interne)
+        print("Stock Disponible:", self.erp.stock_disponible)
+ 
+        # Effacer les éléments existants dans la Treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+ 
+        # Ajouter les nouvelles données obtenues à la Treeview
+        for i in range(len(self.erp.nom_article)):
+            # Utiliser anchor pour centrer le texte
+            self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
+                                                self.erp.reference_interne[i], self.erp.stock_disponible[i]))
+ 
+    def update_table(self):
+        # Effacer les éléments existants dans la Treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+ 
+        # Ajouter les nouvelles données obtenues à la Treeview après mise à jour
+        for i in range(len(self.erp_instance.ordres_fabrication)):
+            self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
+                                                self.erp.quantite_a_produire[i], self.erp.qty_producing[i]))
+ 
+    def sort_column(self, col, reverse):
+        # Obtenez les données actuelles de la Treeview
+        data = [(self.tree.set(child, "Numéro d'OF"), self.tree.set(child, "Date"),
+                self.tree.set(child, "Quantité à réaliser"), self.tree.set(child, "Quantité en production"))
+                for child in self.tree.get_children("")]
+        
+        # Triez les données en fonction de la colonne spécifiée
+        col_index = {"Numéro d'OF": 0, "Date": 1, "Quantité à réaliser": 2, "Quantité en production": 3}[col]
+        data.sort(key=lambda x: x[col_index], reverse=reverse)
+ 
+        # Effacez les éléments existants dans la Treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        
+        # Ajoutez les données triées à la Treeview
+        for item in data:
+            self.tree.insert("", "end", values=item)
+ 
+    def modif_stock(self):
+        # Création du rectangle pour entrer le nombre d'articles
+        self.entry_frame = Tk.Frame(self.master)
+        self.entry_label = Tk.Label(self.entry_frame, text="Ajustement stock:")
+        self.entry_label.grid(row=0, column=0, padx=5, pady=5)
+ 
+        self.num_articles_entry = Tk.Entry(self.entry_frame)
+        self.num_articles_entry.grid(row=0, column=1, padx=5, pady=5)
+ 
+        # Création du bouton Valider
+        self.validate_button = Tk.Button(self.entry_frame, text="Valider", command=self.validate)
+        self.validate_button.grid(row=0, column=2, padx=5, pady=5, sticky="e")
+ 
+        self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+ 
+ 
+ 
 if __name__ == "__main__":
     app = Application()
     app.mainloop()

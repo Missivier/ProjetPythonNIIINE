@@ -12,7 +12,7 @@ class ERP:
         self.common = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/common', allow_none=True)
         self.models = xmlrpc.client.ServerProxy(f'{self.odoo_url}/xmlrpc/2/object', allow_none=True)
         self.uid = 0
-
+ 
         self.nom_article = []
         self.prix_article = []
         self.reference_interne = []
@@ -26,7 +26,7 @@ class ERP:
     def connexion(self, username=None , password=None):
         self.uid = self.common.authenticate(self.db_name, username, password, {})
         if self.uid:
-            print('Connexion réussie. UID utilisateur:', self.uid) 
+            print('Connexion réussie. UID utilisateur:', self.uid)
             self.password = password
         else:
             print('Échec de la connexion.')
@@ -66,7 +66,6 @@ class ERP:
                 'mrp.production', 'search',
                 [[['state', 'not in', ['cancel', 'done']]]]
             )
-
             mos = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
                 'mrp.production', 'read', [mo_ids],
@@ -82,6 +81,8 @@ class ERP:
         else:
             print('Échec de la connexion à Odoo.')
 
+            
+ 
             
  
         return ordres_fabrication, dates_ordres_fabrication, quantite_a_produire, qty_producing
@@ -145,21 +146,22 @@ class ERP:
  
 if __name__ == "__main__":
     erp_instance = ERP(db_name='db_cybervest')
-
+ 
     # tentative requete avant connexion     
     erp_instance.obtenir_informations_produits()
     
     erp_instance.connexion(username='alexandre', password='jslpdl')
     print("--------------------------")
-
+ 
     erp_instance.obtenir_informations_produits()
-
+ 
     erp_instance.afficher_variables()
-
+ 
     ordres, dates, quantites, qty_producing = erp_instance.obtenir_informations_ordres_fabrication()
-
+ 
     # Utilisez ces informations comme nécessaire
     print("Ordres de fabrication :", ordres)
     print("Dates des ordres de fabrication :", dates)
     print("Quantités à produire :", quantites)
     print("Quantités en cours de production :", qty_producing)
+ 
