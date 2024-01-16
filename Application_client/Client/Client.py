@@ -4,7 +4,6 @@ from intregration import ERP
  
 from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
 import tkinter as tk
-
  
  
 class Application(Tk):
@@ -64,20 +63,20 @@ class Application(Tk):
             self.pageProd()
         elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
             self.pageAdmin()
+ 
         else:
             self.pageLog()
-
-
+ 
+ 
     def pageProd(self):
-
+ 
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
         #Supprime page admin si afficher
-
         
         self.label = Label(self, text="Production", font=('Helvetica', 24))
         self.label.pack(pady=10)
-
+ 
         # Création de la grille pour afficher les articles
         self.tree = ttk.Treeview(self, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
  
@@ -94,23 +93,22 @@ class Application(Tk):
         self.tree.column("Quantité à réaliser", width=int(150 * 1.5), anchor="center")
 
         self.tree.pack()
-
+ 
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
         self.affichage_tableau_log()
-
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
-
-
+ 
+ 
     def pageLog(self):
-
+ 
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
         
         self.label = Label(self, text="Logistique", font=('Helvetica', 24))
         self.label.pack(pady=10)
-
+ 
         # Création de la grille pour afficher les articles
         self.tree = ttk.Treeview(self, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
  
@@ -125,18 +123,18 @@ class Application(Tk):
         self.tree.column("Date", width=int(150 * 1.5), anchor="center")
         self.tree.column("Quantité à réaliser", width=int(150 * 1.5), anchor="center")
         self.tree.column("Quantité en production", width=int(150 * 1.5), anchor="center")
-
+ 
         self.tree.pack()
-
+ 
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
         self.affichage_tableau()
-
+ 
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
-
+ 
     def pageAdmin(self):
-
+ 
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
         #Création de la page
@@ -167,33 +165,32 @@ class Application(Tk):
     def affichage_tableau(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_produits()
-
+ 
         # Afficher les valeurs récupérées pour le débogage
         print("Nom des articles:", self.erp.nom_article)
         print("Prix des articles:", self.erp.prix_article)
         print("Référence Interne:", self.erp.reference_interne)
         print("Stock Disponible:", self.erp.stock_disponible)
-
+ 
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
-
         # Ajouter les nouvelles donné   es obtenues à la Treeview
         for i in range(len(self.erp.nom_article)):
             # Utiliser anchor pour centrer le texte
             self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
                                                 self.erp.reference_interne[i], self.erp.stock_disponible[i]))
-
+ 
     def update_table(self):
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
-
+ 
         # Ajouter les nouvelles données obtenues à la Treeview après mise à jour
         for i in range(len(self.erp_instance.ordres_fabrication)):
-            self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i], 
+            self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
                                                 self.erp.quantite_a_produire[i], self.erp.qty_producing[i]))
-
+ 
     def sort_column(self, col, reverse):
         # Obtenez les données actuelles de la Treeview
         data = [(self.tree.set(child, "Numéro d'OF"), self.tree.set(child, "Date"),
@@ -203,7 +200,7 @@ class Application(Tk):
         # Triez les données en fonction de la colonne spécifiée
         col_index = {"Numéro d'OF": 0, "Date": 1, "Quantité à réaliser": 2, "Quantité en production": 3}[col]
         data.sort(key=lambda x: x[col_index], reverse=reverse)
-
+ 
         # Effacez les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -211,7 +208,7 @@ class Application(Tk):
         # Ajoutez les données triées à la Treeview
         for item in data:
             self.tree.insert("", "end", values=item)
-
+ 
     def modif_stock(self):
         # Création du rectangle pour entrer le nombre d'articles
         self.entry_frame = Tk.Frame(self.master)
@@ -226,12 +223,12 @@ class Application(Tk):
         self.validate_button.grid(row=0, column=2, padx=5, pady=5, sticky="e")
  
         self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
-
-
-
+ 
+ 
+ 
         self.stock_entry = Entry(self)
         self.stock_entry.grid(row=3, column=1, padx=5, pady=5)
-
+ 
         # Ajout du bouton Valider
         self.validate_stock_button = Button(self, text="Valider", command=self.update_stock)
         self.validate_stock_button.grid(row=3, column=2, padx=5, pady=5, sticky="e")

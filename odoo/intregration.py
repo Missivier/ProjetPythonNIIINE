@@ -53,7 +53,7 @@ class ERP:
                 self.images_stock.append(product['image_1920'])
         else:
             print('Échec de la connexion à Odoo.')
-
+ 
     def obtenir_informations_ordres_fabrication(self):
         if self.uid:
             orders_ids = self.models.execute_kw(
@@ -65,7 +65,7 @@ class ERP:
                 'mrp.production', 'read', [orders_ids],
                 {'fields': ['name', 'date_planned_start', 'product_qty', 'qty_producing']}
             )
-
+ 
             for order in orders:
                 self.ordres_fabrication.append(order['name'])
                 self.dates_ordres_fabrication.append(order['date_planned_start'])
@@ -154,3 +154,4 @@ if __name__ == "__main__":
     erp_instance.obtenir_informations_produits()
  
     erp_instance.afficher_variables()
+ 
