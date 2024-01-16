@@ -69,7 +69,7 @@ class Application(Tk):
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
         #Supprime page admin si afficher
-        self.page_admin_frame.place_forget()
+
         
         self.label = Label(self, text="Production", font=('Helvetica', 24))
         self.label.pack(pady=10)
@@ -86,13 +86,13 @@ class Application(Tk):
         # Ajout des colonnes avec une largeur augmentée de 50%
         self.tree.column("Numéro d'OF", width=int(150 * 1.5), anchor="center")
         self.tree.column("Date", width=int(150 * 1.5), anchor="center")
-        self.tree.column("Quantité à réaliser", width=int(150 * 1.5), anchor="center")
         self.tree.column("Quantité en production", width=int(150 * 1.5), anchor="center")
+        self.tree.column("Quantité à réaliser", width=int(150 * 1.5), anchor="center")
 
         self.tree.pack()
 
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
-        self.affichage_tableau()
+        self.affichage_tableau_log()
 
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
@@ -104,7 +104,6 @@ class Application(Tk):
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
         #Supprime page admin si afficher
-        self.page_admin_frame.place_forget()
         
         
         self.label = Label(self, text="Logistique", font=('Helvetica', 24))
@@ -166,7 +165,7 @@ class Application(Tk):
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        # Ajouter les nouvelles données obtenues à la Treeview
+        # Ajouter les nouvelles donné   es obtenues à la Treeview
         for i in range(len(self.erp.nom_article)):
             # Utiliser anchor pour centrer le texte
             self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
@@ -227,25 +226,25 @@ class Application(Tk):
  
  
  
-    def affichage_tableau(self):
+    def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
-        self.erp.obtenir_informations_produits()
+        self.erp.obtenir_informations_ordres_fabrication()
  
         # Afficher les valeurs récupérées pour le débogage
-        print("Nom des articles:", self.erp.nom_article)
-        print("Prix des articles:", self.erp.prix_article)
-        print("Référence Interne:", self.erp.reference_interne)
-        print("Stock Disponible:", self.erp.stock_disponible)
+        print("Ordre fabrication:", self.erp.ordres_fabrication)
+        print("Date ordre fabrication:", self.erp.dates_ordres_fabrication)
+        print("Quantité à produire:", self.erp.quantite_a_produire)
+        print("Quantité en production:", self.erp.qty_producing)
  
         # Effacer les éléments existants dans la Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
  
         # Ajouter les nouvelles données obtenues à la Treeview
-        for i in range(len(self.erp.nom_article)):
+        for i in range(len(self.erp.ordres_fabrication)):
             # Utiliser anchor pour centrer le texte
-            self.tree.insert("", "end", values=(self.erp.nom_article[i], self.erp.prix_article[i],
-                                                self.erp.reference_interne[i], self.erp.stock_disponible[i]))
+            self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
+                                                self.erp.qty_producing[i], self.erp.quantite_a_produire[i]))
  
     def update_table(self):
         # Effacer les éléments existants dans la Treeview
