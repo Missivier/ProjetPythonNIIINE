@@ -14,20 +14,23 @@ class Application(Tk):
         # Créer les variables d'entrée
         self.entry_username = tk.StringVar()
         self.entry_password = tk.StringVar()
- 
+
+        #Creation de la page Client
         self.title("Application CyberVest")
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
         self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
- 
         self.background_frame = Frame(self, bg="#DAD7D7")
         self.background_frame.place(relwidth=1, relheight=1)
  
         # Création d'un bouton pour quitter l'application
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
- 
+
+        #connexion à L'ERP
         self.erp = ERP("db_cybervest")
+
+        #Afficher La page de login
         self.login_page()
  
     #Création de la page login
@@ -35,6 +38,9 @@ class Application(Tk):
      # Création de la frame pour la page login
         self.login_frame = tk.Frame(self)
         self.login_frame.place(relx=0.5, rely=0.5, anchor="center")
+
+        border_frame = tk.Label(self.login_frame,bg="#333333")
+        border_frame.grid(row=0, column=1, padx=10, pady=10)
  
         label_username = tk.Label(self.login_frame, text="Nom d'utilisateur:")
         label_password = tk.Label(self.login_frame, text="Mot de passe:")
@@ -54,12 +60,10 @@ class Application(Tk):
  
     def login(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
-        
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.pageProd()
         elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
             self.pageAdmin()
-
         else:
             self.pageLog()
 
@@ -103,9 +107,6 @@ class Application(Tk):
 
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
-        #Supprime page admin si afficher
-        self.page_admin_frame.place_forget()
-        
         
         self.label = Label(self, text="Logistique", font=('Helvetica', 24))
         self.label.pack(pady=10)
