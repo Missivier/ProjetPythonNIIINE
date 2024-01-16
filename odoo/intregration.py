@@ -22,6 +22,7 @@ class ERP:
         self.dates_ordres_fabrication = []
         self.quantite_a_produire = []
         self.qty_producing = []
+        
  
     def connexion(self, username=None , password=None):
         self.uid = self.common.authenticate(self.db_name, username, password, {})
@@ -52,35 +53,26 @@ class ERP:
                 self.images_stock.append(product['image_1920'])
         else:
             print('Échec de la connexion à Odoo.')
- 
+
     def obtenir_informations_ordres_fabrication(self):
         if self.uid:
-            product_ids = self.models.execute_kw(
+            orders_ids = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
-                'mrp.production', 'search', [[['state', 'not in', ['cancel', 'done']]]], {}
+                'mrp.production', 'search', [[]], {}
             )
-            products = self.models.execute_kw(
+            orders = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
-                'mrp.production', 'read', [product_ids],
+                'mrp.production', 'read', [orders_ids],
                 {'fields': ['name', 'date_planned_start', 'product_qty', 'qty_producing']}
             )
 
-            ordres = []
-            dates = []
-            quantites = []
-            qty_producing = []
-
-            for product in products:
-                ordres.append(product['name'])
-                dates.append(product['date_planned_start'])
-                quantites.append(product['product_qty'])
-                qty_producing.append(product['qty_producing'])
-
-            return ordres, dates, quantites, qty_producing
+            for order in orders:
+                self.ordres_fabrication.append(order['name'])
+                self.dates_ordres_fabrication.append(order['date_planned_start'])
+                self.quantite_a_produire.append(order['product_qty'])
+                self.qty_producing.append(order['qty_producing'])
         else:
             print('Échec de la connexion à Odoo.')
-            return [], [], [], []
-
     def modifier_stock_odoo(self, default_code, new_stock):
         if self.uid:
             product_id = self.models.execute_kw(
@@ -150,12 +142,3 @@ if __name__ == "__main__":
     erp_instance.obtenir_informations_produits()
  
     erp_instance.afficher_variables()
- 
-    ordres, dates, quantites, qty_producing = erp_instance.obtenir_informations_ordres_fabrication()
- 
-    # Utilisez ces informations comme nécessaire
-    print("Ordres de fabrication :", ordres)
-    print("Dates des ordres de fabrication :", dates)
-    print("Quantités à produire :", quantites)
-    print("Quantités en cours de production :", qty_producing)
- 
