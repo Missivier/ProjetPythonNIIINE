@@ -1,8 +1,15 @@
 import xmlrpc.client
 import base64
 from datetime import datetime, timedelta
+from io import BytesIO
+from PIL import Image
  
 class ERP:
+    
+#----------------------------------------------------------------------------------------------------
+#     Constructeur
+#----------------------------------------------------------------------------------------------------
+    
     def __init__(self, db_name=None, ):
         self.odoo_ipaddr = "172.31.11.2"
         self.odoo_port = "8069"
@@ -22,7 +29,11 @@ class ERP:
         self.dates_ordres_fabrication = []
         self.quantite_a_produire = []
         self.qty_producing = []
-        
+
+#----------------------------------------------------------------------------------------------------
+#     Méthodes Gestion USER
+#----------------------------------------------------------------------------------------------------
+
  
     def connexion(self, username=None , password=None):
         self.uid = self.common.authenticate(self.db_name, username, password, {})
@@ -33,6 +44,18 @@ class ERP:
             print('Échec de la connexion.')
         return self.uid
  
+    def deconnexion(self):
+        if self.uid:
+            #self.common.logout(self.db_name, self.uid, self.password)
+            self.uid = 0
+            print('Déconnexion réussie.')
+        else:
+            print('Aucun utilisateur connecté.')
+
+#----------------------------------------------------------------------------------------------------
+#     Méthodes READ
+#----------------------------------------------------------------------------------------------------
+            
     def obtenir_informations_produits(self):
         if self.uid:
             product_ids = self.models.execute_kw(
@@ -44,16 +67,19 @@ class ERP:
                 'product.product', 'read', [product_ids],
                 {'fields': ['name', 'list_price', 'default_code', 'qty_available', 'image_1920']}
             )
- 
+
             for product in products:
                 self.nom_article.append(product['name'])
                 self.prix_article.append(product['list_price'])
                 self.reference_interne.append(product['default_code'])
                 self.stock_disponible.append(product['qty_available'])
                 self.images_stock.append(product['image_1920'])
+            if self.images_stock:
+                    self.images_stock = self.io.BytesIO(base64.b64decode(self.images_stock))
+                    img = Image.open(self.images_stock)
         else:
             print('Échec de la connexion à Odoo.')
- 
+
     def obtenir_informations_ordres_fabrication(self):
         if self.uid:
             orders_ids = self.models.execute_kw(
@@ -73,6 +99,11 @@ class ERP:
                 self.qty_producing.append(order['qty_producing'])
         else:
             print('Échec de la connexion à Odoo.')
+
+#----------------------------------------------------------------------------------------------------
+#     Méthodes WRITE
+#----------------------------------------------------------------------------------------------------
+
     def modifier_stock_odoo(self, default_code, new_stock):
         if self.uid:
             product_id = self.models.execute_kw(
@@ -118,6 +149,10 @@ class ERP:
                 print(f"L'ordre de fabrication '{ordre_fabrication}' n'a pas été trouvé.")
         else:
             print('Échec de la connexion à Odoo.')
+
+#----------------------------------------------------------------------------------------------------
+#     Méthodes TEST
+#----------------------------------------------------------------------------------------------------
  
     def afficher_variables(self):
         if self.nom_article:
@@ -137,7 +172,9 @@ class ERP:
         if self.qty_producing:
             print("Stock disponible :", self.qty_producing[0])
  
- 
+#----------------------------------------------------------------------------------------------------
+#     Application 
+#----------------------------------------------------------------------------------------------------
  
 if __name__ == "__main__":
     erp_instance = ERP(db_name='db_cybervest')
@@ -155,3 +192,6 @@ if __name__ == "__main__":
  
     erp_instance.afficher_variables()
  
+    erp_instance.modifier_stock_odoo()
+
+
