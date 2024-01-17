@@ -49,7 +49,6 @@ class Application(Tk):
  
         #Afficher La page de login
         self.login_page()
-<<<<<<< HEAD
  
 #----------------------------------------------------------------------------------------------------
 #     Gestion USER
@@ -73,9 +72,7 @@ class Application(Tk):
 #----------------------------------------------------------------------------------------------------
  
 #--------------------------------------------------------------------------------------------------------------------------------------------
-=======
 
->>>>>>> fe2e5ef7b2cb1d075447065502fc9baf328bac3c
     #Fonction Login
     def login(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
