@@ -1,8 +1,9 @@
 import sys
 sys.path.insert(0,'odoo')
 from intregration import ERP
+from PIL import Image, ImageTk
  
-from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
+from tkinter import Tk, Label, Entry, Button, Frame, ttk
 import tkinter as tk
  
  
@@ -20,17 +21,37 @@ class Application(Tk):
         self.entry_password = tk.StringVar()
  
         #Creation de la page Client
-        self.title("Application CyberVest")
-        self.screen_width = self.winfo_screenwidth()
-        self.screen_height = self.winfo_screenheight()
-        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
+        self.title("Application CyberVest")#Titre
+        self.screen_width = self.winfo_screenwidth()#Largeur fenetre
+        self.screen_height = self.winfo_screenheight()#Longueur fenetre
+        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")#Equation des L*l
+
+        # Creation Background fentre client
         self.background_frame = Frame(self, bg="#DAD7D7")
         self.background_frame.place(relwidth=1, relheight=1)
+
+        # Création d'un Canvas pour l'image de fond
+        self.canvas = tk.Canvas(self.background_frame, width=self.screen_width, height=self.screen_height)
+        self.canvas.pack()
+
+        # Charger l'image de fond
+        background_image = Image.open("/home/user/Documents/ProjetPythonNIIINE/Application_client/Image/v915-wit-011.jpg")
+        background_image = ImageTk.PhotoImage(background_image)
+
+        # Ajouter l'image au Canvas
+        self.canvas.create_image(0, 0, image=background_image)
+
  
         # Création d'un bouton pour quitter l'application
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
- 
+
+        #Creation bouton déco
+        self.Button_deco = tk.Button(self, text="Deconnexion",fg="black", bg="#DAD7D7", font=("Arial", 12), command=self.deconnexion)
+
+        #Creation bouton pour aller retourner menu admin
+        self.Button_retour = tk.Button(self, text="Retour",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
+
         #connexion à L'ERP
         self.erp = ERP("db_cybervest")
  
@@ -58,6 +79,23 @@ class Application(Tk):
 #     Méthodes page LOGIN
 #----------------------------------------------------------------------------------------------------
  
+#--------------------------------------------------------------------------------------------------------------------------------------------
+    #Fonction Login
+    def login(self):
+        # Gestion des connexions valides et faire appparaitre la page en conséquence
+        if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
+            self.pageProd()#Affichage de la page production
+            self.show_button_deconnexion()
+            
+        elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
+            self.show_button_deconnexion()
+            self.pageAdmin()
+            
+            
+        else:
+            self.pageLog()
+            self.show_button_deconnexion()
+
     #Création de la page login
     def login_page(self):
      # Création de la frame pour la page login
@@ -85,17 +123,21 @@ class Application(Tk):
 #     Méthodes page PRODUCTION
 #----------------------------------------------------------------------------------------------------
         
+    #Creation de la page Production
     def pageProd(self):
- 
+        self.Number_page == 2
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
-        #Supprime page admin si afficher
-        
-        self.label = Label(self, text="Production", font=('Helvetica', 24))
+
+        #Création de la page
+        self.page_prod_frame = tk.Frame(self,bg="#DAD7D7")
+        self.page_prod_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+         
+        self.label = Label(self.page_prod_frame, text="Production", font=('Helvetica', 24))
         self.label.pack(pady=10)
  
         # Création de la grille pour afficher les articles
-        self.tree = ttk.Treeview(self, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
+        self.tree = ttk.Treeview(self.page_prod_frame, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
  
         # Configuration des en-têtes de colonnes
         self.tree.heading("Numéro d'OF", text="Numéro d'OF", command=lambda: self.sort_column("Numéro d'OF", False))
@@ -117,6 +159,7 @@ class Application(Tk):
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
+
  
     def affichage_tableau_prod(self):
         # Utiliser l'instance de la classe ERP
@@ -152,21 +195,20 @@ class Application(Tk):
 #     Méthodes page LOGISTIQUE
 #----------------------------------------------------------------------------------------------------
 
+    #Creation de la page Logistique
     def pageLog(self, master=None):
- 
+        self.Number_page == 2
         # Supprime les widgets de la page de connexion
-        self.login_frame.grid_forget()
-         # Supprime le bouton Quitter
-        self.bouton_quit.grid_forget()
- 
+        self.login_frame.place_forget()
+
         self.page_log_frame = tk.Frame(self)
         self.page_log_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
  
-        self.label = Label(self, text="Logistique", font=('Helvetica', 24))
+        self.label = Label(self.page_log_frame, text="Logistique", font=('Helvetica', 24))
         self.label.pack(pady=10)
  
         # Création de la grille pour afficher les articles
-        self.tree = ttk.Treeview(self, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
+        self.tree = ttk.Treeview(self.page_log_frame, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
  
         # Configuration des en-têtes de colonnes
         self.tree.heading("Nom", text="Nom", command=lambda: self.sort_column_log("Nom", False))
@@ -206,6 +248,66 @@ class Application(Tk):
         self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
         self.validate_stock_button.place(relx=0.54, rely=0.205, anchor='center')
  
+    #Création de la page Admin
+    def pageAdmin(self):
+        self.Number_page = 1
+        # Supprime les widgets de la page de connexion
+        self.login_frame.place_forget()
+
+        #Création de la page
+        self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
+        self.page_admin_frame.place(relx=0, rely=0.1, relwidth=1, relheight=0.8)
+        #Creation bouton pour aller page prod
+        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Bouton_retour()])
+        self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
+        #Creation bouton pour aller page logistique
+        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Bouton_retour()])
+        self.Button_logis.place(relx=0.7, rely=0.5, anchor="center")
+        '''
+        # Configuration des en-têtes de colonnes
+        columns = ("Nom", "Prix", "Référence Interne", "Stock Disponible")
+        for col in columns:
+            self.sort_order[col] = True  # Initialisation à True pour tri ascendant par défaut
+            self.tree.heading(col, text=col, command=lambda c=col: self.sort_column_log(c))
+
+        # Ajout de la case d'entrée pour la quantité d'articles à retirer
+        self.stock_entry_label = Label(self.page_log_frame, text="Affectation stock:")
+        self.stock_entry_label.place(relx=0.5, rely=0.4, anchor='center') 
+
+        self.stock_entry = Entry(self.page_log_frame)
+        self.stock_entry.place(relx=0.48, rely=0.41) 
+
+        # Ajout du bouton Valider
+        self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
+        self.validate_stock_button.place(relx=0.535, rely=0.405, anchor='center')
+        '''
+    # Creation et gestion bouton retour
+    def Bouton_retour(self):
+        self.Button_retour.place(relx=0, rely=1, anchor="sw")
+    def Retour(self):
+        #Fonction pour revenir sur le menu admin
+        self.Button_retour.place_forget()
+        self.page_prod_frame.place_forget()
+        self.page_log_frame.place_forget()
+        self.pageAdmin()
+
+    # Création et fonction bouton déco
+    def show_button_deconnexion(self):
+        self.Button_deco.place(relx=0.92, rely=0.03)
+
+    def deconnexion(self):
+        if self.Number_page == 1:
+            self.page_admin_frame.place_forget()
+        elif self.Number_page == 2:
+            self.page_prod_frame.place_forget()
+        elif  self.Number_page == 3:     
+            self.page_log_frame.place_forget() 
+
+        self.Button_deco.place_forget()        
+        self.Button_retour.place_forget()
+
+        self.login_page()
+
     def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_produits()
@@ -263,8 +365,6 @@ class Application(Tk):
         self.stock_entry.delete(0, 'end')
         self.stock_entry.insert(0, "")
 
-
- 
     def sort_column_log(self, col):
         # Obtenez l'état actuel du tri pour la colonne spécifiée
         reverse = self.sort_order[col]
@@ -309,6 +409,32 @@ class Application(Tk):
             if article["name"] == article_name:
                 return i
         return -1  # Retourne -1 si l'article n'est pas trouvé
+    def update_stock_log(self):
+        # Récupération de la quantité saisie dans la case d'entrée
+        quantite = self.stock_entry.get()
+
+        # Assurez-vous que la quantité est un nombre entier
+        try:
+            quantite = int(quantite)
+        except ValueError:
+            print("Veuillez saisir un nombre entier pour la quantité.")
+            return
+
+        # Stockage de la nouvelle quantité dans la variable new_stock
+        self.new_stock = quantite
+
+        # Obtenez la ligne sélectionnée
+        item_selectionne = self.tree.selection()
+
+        if not item_selectionne:
+            print("Aucune ligne sélectionnée.")
+            return
+
+        # Obtenez le nom de l'article associé à la ligne sélectionnée
+        nom_article = self.tree.item(item_selectionne, "values")[0]
+
+        # Mise à jour du stock dans Odoo
+        succes = self.erp.update_odoo_stock(nom_article, quantite)
 
 #----------------------------------------------------------------------------------------------------
 #     Méthodes page ADMIN
