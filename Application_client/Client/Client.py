@@ -31,7 +31,18 @@ class Application(Tk):
 
         #Afficher La page de login
         self.login_page()
+
+    #Fonction Login
+    def login(self):
+        # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
+        if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
+            self.pageProd()
+        elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
+            self.pageAdmin()
  
+        else:
+            self.pageLog()
+
     #Création de la page login
     def login_page(self):
      # Création de la frame pour la page login
@@ -54,31 +65,21 @@ class Application(Tk):
         self.entry_username.grid(row=0, column=1, padx=10, pady=10)
         self.entry_password.grid(row=1, column=1, padx=10, pady=10)
         button_login.grid(row=2, column=1, pady=20)
- 
-        
- 
-    def login(self):
-        # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
-        if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
-            self.pageProd()
-        elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
-            self.pageAdmin()
- 
-        else:
-            self.pageLog()
- 
- 
+
+    #Creation de la page Production
     def pageProd(self):
  
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
-        #Supprime page admin si afficher
-        
-        self.label = Label(self, text="Production", font=('Helvetica', 24))
+        #Création de la page
+        self.page_prod_frame = tk.Frame(self,bg="#DAD7D7")
+        self.page_prod_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+         
+        self.label = Label(self.page_prod_frame, text="Production", font=('Helvetica', 24))
         self.label.pack(pady=10)
  
         # Création de la grille pour afficher les articles
-        self.tree = ttk.Treeview(self, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
+        self.tree = ttk.Treeview(self.page_prod_frame, columns=("Numéro d'OF", "Date", "Quantité à réaliser", "Quantité en production"), show="headings")
  
         # Configuration des en-têtes de colonnes
         self.tree.heading("Numéro d'OF", text="Numéro d'OF", command=lambda: self.sort_column("Numéro d'OF", False))
@@ -101,7 +102,7 @@ class Application(Tk):
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
  
- 
+    #Creation de la page Logistique
     def pageLog(self, master=None):
  
         # Supprime les widgets de la page de connexion
@@ -158,6 +159,7 @@ class Application(Tk):
         self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
         self.validate_stock_button.place(relx=0.55, rely=0.4, anchor='center')
  
+    #Création de la page Admin
     def pageAdmin(self):
  
         # Supprime les widgets de la page de connexion
@@ -192,17 +194,18 @@ class Application(Tk):
         self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
         self.validate_stock_button.place(relx=0.535, rely=0.405, anchor='center')
 
-    def pageVente(self):
-        print("ok")
-
+    # Creation et gestion bouton retour
     def Boutton_retour(self):
         #Creation bouton pour aller retourner menu admin
         self.Button_retour = tk.Button(self, text="Retour",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
         self.Button_retour.place(relx=0.1, rely=0.9, anchor="sw")
-
+    
     def Retour(self):
         #Fonction pour revenir sur le menu admin
         self.Button_retour.place_forget()
+        self.page_prod_frame.place_forget()
+        self.page_log_frame.place_forget()
+        self.pageAdmin()
 
     def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
@@ -274,10 +277,7 @@ class Application(Tk):
         # Ajout du bouton Valider
         self.validate_stock_button = Button(self, text="Valider", command=self.update_stock)
         self.validate_stock_button.grid(row=3, column=2, padx=5, pady=5, sticky="e")
- 
- 
- 
- 
+
     def affichage_tableau_prod(self):
         # Utiliser l'instance de la classe ERP
         self.erp.obtenir_informations_ordres_fabrication()
@@ -331,7 +331,6 @@ class Application(Tk):
         for item in data:
             self.tree.insert("", "end", values=item)
 
- 
     def modif_stock_log(self):
         # Création du rectangle pour entrer le nombre d'articles
         self.entry_frame = Tk.Frame(self.master)
