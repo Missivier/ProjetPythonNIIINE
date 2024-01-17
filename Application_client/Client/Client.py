@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(0,'odoo')
 from intregration import ERP
-from PIL import Image, ImageTk
+from PIL import Image
  
 from tkinter import Tk, Label, Entry, Button, Frame, ttk
 import tkinter as tk
