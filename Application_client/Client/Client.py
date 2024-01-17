@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(0,'odoo')
 from intregration import ERP
-from PIL import Image
+from PIL import Image, ImageTk
 from tkinter import Tk, Label, Entry, Button, Frame, ttk
 import tkinter as tk
  
@@ -24,19 +24,36 @@ class Application(Tk):
         self.screen_width = self.winfo_screenwidth()#Largeur fenetre
         self.screen_height = self.winfo_screenheight()#Longueur fenetre
         self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")#Equation des L*l
+        #---------------------------------------------------------------------------------------------------------------
+            # Fond d'écran
+        # Chargement de l'image avec Pillow
+        fond_ecran = "/home/user/Documents/ProjetPythonNIIINE/Application_client/Client/Image/Fond_ecran.png"
+        self.image_pil = Image.open(fond_ecran)
+        self.image_tk = ImageTk.PhotoImage(self.image_pil)
 
-        # Creation Background fentre client
-        self.background_frame = Frame(self, bg="#DAD7D7")
-        self.background_frame.place(relwidth=1, relheight=1)
+        # Création d'un widget Canvas pour afficher l'image
+        self.canvas_FD = tk.Canvas(self, width=self.image_tk.width(), height=self.image_tk.height())
+        self.canvas_FD.pack(expand=tk.YES, fill=tk.BOTH)
 
-        # Création d'un Canvas pour l'image de fond
-        self.canvas = tk.Canvas(self.background_frame, width=self.screen_width, height=self.screen_height)
-        self.canvas.pack()
- 
+        # Affichage de l'image en fond d'écran
+        self.canvas_FD.create_image(0, 0, anchor=tk.NW, image=self.image_tk)
+
+        # Associer la fonction de redimensionnement à l'événement de redimensionnement de la fenêtre
+        self.bind("<Configure>", self.redimensionner_image)
+        #---------------------------------------------------------------------------------------------------------------
+        # Mise en place du logo
+        logo_path = "/home/user/Documents/ProjetPythonNIIINE/Application_client/Client/Image/Logo.png"
+        self.image_pil_2 = Image.open(logo_path)
+        self.image_tk_2 = ImageTk.PhotoImage(self.image_pil_2)
+        self.canvas_logo = tk.Canvas(self, width=self.image_tk_2.width(), height=self.image_tk_2.height())
+        self.canvas_logo.place(relx=0.5, rely=0.5, anchor='center')
+        self.canvas_logo.create_image(0, 0, anchor=tk.NW, image=self.image_tk_2)
+        self.iconphoto(True, self.image_tk_2)
+
         # Création d'un bouton pour quitter l'application
-        self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
-        self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
-
+        bouton_quit = tk.Button(self, text="Quitter", bg="#DAD7D7", font=("Arial", 12), command=self.destroy)
+        bouton_quit.place(relx=1, rely=1, anchor='se')  # Positionne le bouton en bas à droite
+        
         #Creation bouton déco
         self.Button_deco = tk.Button(self, text="Deconnexion",fg="black", bg="#DAD7D7", font=("Arial", 12), command=self.deconnexion)
 
@@ -47,40 +64,65 @@ class Application(Tk):
 
         #Afficher La page de login
         self.login_page()
+    
+    def redimensionner_image(self, event):
+
+        nouvelle_largeur = event.width
+        nouvelle_hauteur = event.height
+
+        # Redimensionnement de l'image avec Pillow
+        image_redimensionnee = self.image_pil.resize((nouvelle_largeur, nouvelle_hauteur), Image.ANTIALIAS)
+
+        # Création d'une nouvelle image Tkinter
+        nouvelle_image_tk = ImageTk.PhotoImage(image_redimensionnee)
+
+        # Configuration du Canvas avec la nouvelle taille
+        self.canvas_FD.config(width=nouvelle_largeur, height=nouvelle_hauteur)
+
+        # Affichage de la nouvelle image
+        self.canvas_FD.create_image(0, 0, anchor=tk.NW, image=nouvelle_image_tk)
+
+        # Mise à jour de la référence à l'image pour éviter la suppression
+        self.canvas_FD.image = nouvelle_image_tk
+    
+        
 #--------------------------------------------------------------------------------------------------------------------------------------------
     #Fonction Login
     def connexion(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.pageProd()
+            
         elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
             self.pageAdmin()
- 
+            self.canvas_logo.place_forget()
+
+
         else:
             self.pageLog()
 
     #Création de la page login
     def login_page(self):
      # Création de la frame pour la page login
-        self.login_frame = tk.Frame(self)
-        self.login_frame.place(relx=0.5, rely=0.5, anchor="center")
+        self.login_frame = tk.Frame(self,bg="#c2bebd")
+        self.login_frame.place(relx=0.5, rely=0.5, relwidth=0.2,relheight=0.2,anchor="center")
  
-        border_frame = tk.Label(self.login_frame,bg="#333333")
-        border_frame.grid(row=0, column=1, padx=10, pady=10)
+        border_frame = tk.Frame(self.login_frame,bg="#DAD7D7")
+        border_frame.place(relx=0.013, rely=0.02, relwidth=0.975,relheight=0.96)
  
-        label_username = tk.Label(self.login_frame, text="Nom d'utilisateur:")
-        label_password = tk.Label(self.login_frame, text="Mot de passe:")
+        label_username = tk.Label(self.login_frame, text="Nom d'utilisateur:",bg="#DAD7D7")
+        label_password = tk.Label(self.login_frame, text="Mot de passe:",bg="#DAD7D7")
  
         self.entry_username = tk.Entry(self.login_frame)
         self.entry_password = tk.Entry(self.login_frame, show="*")
         button_login = tk.Button(self.login_frame, text="Connexion", command=self.connexion)
  
-        label_username.grid(row=0, column=0, padx=10, pady=10, sticky=tk.E)
-        label_password.grid(row=1, column=0, padx=10, pady=10, sticky=tk.E)
+        label_username.place(relx=0.2, rely=0.2, anchor='center')
+        label_password.place(relx=0.2, rely=0.45, anchor='center')
  
-        self.entry_username.grid(row=0, column=1, padx=10, pady=10)
-        self.entry_password.grid(row=1, column=1, padx=10, pady=10)
-        button_login.grid(row=2, column=1, pady=20)
+        self.entry_username.place(relx=0.7, rely=0.2,relwidth=0.5,relheight=0.15 ,anchor='center')
+        self.entry_password.place(relx=0.7, rely=0.45,relwidth=0.5,relheight=0.15 ,anchor='center')
+        button_login.place(relx=0.5, rely=0.8, relwidth=0.5,relheight=0.2,anchor='center')
 
 #----------------------------------------------------------------------------------------------------
 #     Méthodes page PRODUCTION
