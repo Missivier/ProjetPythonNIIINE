@@ -113,7 +113,7 @@ class Application(Tk):
         
     #Creation de la page Production
     def pageProd(self):
-        self.Number_page == 2
+        #self.Number_page == 2
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
         #Création de la page
@@ -184,7 +184,7 @@ class Application(Tk):
 
     #Creation de la page Logistique
     def pageLog(self, master=None):
-        self.Number_page == 2
+        #self.Number_page == 2
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
 
@@ -234,40 +234,7 @@ class Application(Tk):
         # Ajout du bouton Valider
         self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
         self.validate_stock_button.place(relx=0.54, rely=0.205, anchor='center')
- 
-    #Création de la page Admin
-    def pageAdmin(self):
-        self.Number_page = 1
-        # Supprime les widgets de la page de connexion
-        self.login_frame.place_forget()
 
-        #Création de la page
-        self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
-        self.page_admin_frame.place(relx=0, rely=0.1, relwidth=1, relheight=0.8)
-        #Creation bouton pour aller page prod
-        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Bouton_retour()])
-        self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
-        #Creation bouton pour aller page logistique
-        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Bouton_retour()])
-        self.Button_logis.place(relx=0.7, rely=0.5, anchor="center")
-        '''
-        # Configuration des en-têtes de colonnes
-        columns = ("Nom", "Prix", "Référence Interne", "Stock Disponible")
-        for col in columns:
-            self.sort_order[col] = True  # Initialisation à True pour tri ascendant par défaut
-            self.tree.heading(col, text=col, command=lambda c=col: self.sort_column_log(c))
-
-        # Ajout de la case d'entrée pour la quantité d'articles à retirer
-        self.stock_entry_label = Label(self.page_log_frame, text="Affectation stock:")
-        self.stock_entry_label.place(relx=0.5, rely=0.4, anchor='center') 
-
-        self.stock_entry = Entry(self.page_log_frame)
-        self.stock_entry.place(relx=0.48, rely=0.41) 
-
-        # Ajout du bouton Valider
-        self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
-        self.validate_stock_button.place(relx=0.535, rely=0.405, anchor='center')
-        '''
     # Creation et gestion bouton retour
     def Bouton_retour(self):
         self.Button_retour.place(relx=0, rely=1, anchor="sw")
@@ -451,12 +418,7 @@ class Application(Tk):
  
         self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-    def get_article_index_log(self, article_name):
-        # Fonction utilitaire pour récupérer l'index de l'article dans self.erp_instance.images_stock
-        for i, article in enumerate(self.erp.images_stock):
-            if article["name"] == article_name:
-                return i
-        return -1  # Retourne -1 si l'article n'est pas trouvé
+   
     def update_stock_log(self):
         # Récupération de la quantité saisie dans la case d'entrée
         quantite = self.stock_entry.get()
@@ -487,41 +449,21 @@ class Application(Tk):
 #----------------------------------------------------------------------------------------------------
 #     Méthodes page ADMIN
 #----------------------------------------------------------------------------------------------------
-
+#Création de la page Admin
     def pageAdmin(self):
- 
+        #self.Number_page = 1
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
+
         #Création de la page
         self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
-        self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+        self.page_admin_frame.place(relx=0, rely=0.1, relwidth=1, relheight=0.8)
         #Creation bouton pour aller page prod
-        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Boutton_retour()])
+        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Bouton_retour()])
         self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
         #Creation bouton pour aller page logistique
-        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Boutton_retour()])
-        self.Button_logis.place(relx=0.5, rely=0.5, anchor="center")
-        #Creation bouton pour aller page commerce
-        self.Button_commerce = tk.Button(self.page_admin_frame, text="Commerce",fg="black", bg="#DAD7D7", font=("Arial", 20),command=lambda: [self.pageVente(), self.Boutton_retour()])
-        self.Button_commerce.place(relx=0.7, rely=0.5, anchor="center")
- 
-        # Configuration des en-têtes de colonnes
-        columns = ("Nom", "Prix", "Référence Interne", "Stock Disponible")
-        for col in columns:
-            self.sort_order[col] = True  # Initialisation à True pour tri ascendant par défaut
-            self.tree.heading(col, text=col, command=lambda c=col: self.sort_column_log(c))
- 
-        # Ajout de la case d'entrée pour la quantité d'articles à retirer
-        self.stock_entry_label = Label(self.page_log_frame, text="Affectation stock:")
-        self.stock_entry_label.place(relx=0.5, rely=0.4, anchor='center')
- 
-        self.stock_entry = Entry(self.page_log_frame)
-        self.stock_entry.place(relx=0.48, rely=0.41)
- 
-        # Ajout du bouton Valider
-        self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
-        self.validate_stock_button.place(relx=0.535, rely=0.405, anchor='center')
- 
+        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Bouton_retour()])
+        self.Button_logis.place(relx=0.7, rely=0.5, anchor="center")
 #----------------------------------------------------------------------------------------------------
 #     Méthodes gestion des BOUTONS
 #----------------------------------------------------------------------------------------------------
