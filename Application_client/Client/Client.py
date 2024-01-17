@@ -402,7 +402,7 @@ class Application(Tk):
         self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
    
-    def update_stock_log(self):
+     def update_stock_prod(self):
         # Récupération de la quantité saisie dans la case d'entrée
         quantite = self.stock_entry.get()
 
@@ -428,6 +428,17 @@ class Application(Tk):
 
         # Mise à jour du stock dans Odoo
         succes = self.erp.update_odoo_stock(nom_article, quantite)
+
+        if succes:
+            # Affichage d'un message de confirmation dans le terminal
+            print(f"Stock de {quantite} articles de '{nom_article}' mis à jour avec succès dans Odoo.")
+        else:
+            # En cas d'échec de la mise à jour dans Odoo
+            print(f"Échec de la mise à jour du stock pour '{nom_article}' dans Odoo.")
+
+        # Effacement de la case d'entrée et du bouton Valider après la mise à jour
+        self.stock_entry.delete(0, 'end')
+ 
 
 #----------------------------------------------------------------------------------------------------
 #     Méthodes page ADMIN
