@@ -1,6 +1,8 @@
 import xmlrpc.client
 import base64
 from datetime import datetime, timedelta
+from io import BytesIO
+from PIL import Image
  
 class ERP:
     
@@ -65,13 +67,16 @@ class ERP:
                 'product.product', 'read', [product_ids],
                 {'fields': ['name', 'list_price', 'default_code', 'qty_available', 'image_1920']}
             )
- 
+
             for product in products:
                 self.nom_article.append(product['name'])
                 self.prix_article.append(product['list_price'])
                 self.reference_interne.append(product['default_code'])
                 self.stock_disponible.append(product['qty_available'])
                 self.images_stock.append(product['image_1920'])
+            if self.images_stock:
+                    self.images_stock = self.io.BytesIO(base64.b64decode(self.images_stock))
+                    img = Image.open(self.images_stock)
         else:
             print('Échec de la connexion à Odoo.')
 

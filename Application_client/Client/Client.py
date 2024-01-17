@@ -49,6 +49,7 @@ class Application(Tk):
  
         #Afficher La page de login
         self.login_page()
+<<<<<<< HEAD
  
 #----------------------------------------------------------------------------------------------------
 #     Gestion USER
@@ -72,21 +73,19 @@ class Application(Tk):
 #----------------------------------------------------------------------------------------------------
  
 #--------------------------------------------------------------------------------------------------------------------------------------------
+=======
+
+>>>>>>> fe2e5ef7b2cb1d075447065502fc9baf328bac3c
     #Fonction Login
     def login(self):
-        # Gestion des connexions valides et faire appparaitre la page en conséquence
+        # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
-            self.pageProd()#Affichage de la page production
-            self.show_button_deconnexion()
-            
+            self.pageProd()
         elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
-            self.show_button_deconnexion()
             self.pageAdmin()
-            
-            
+ 
         else:
             self.pageLog()
-            self.show_button_deconnexion()
 
     #Création de la page login
     def login_page(self):
@@ -120,7 +119,6 @@ class Application(Tk):
         self.Number_page == 2
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
-
         #Création de la page
         self.page_prod_frame = tk.Frame(self,bg="#DAD7D7")
         self.page_prod_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
@@ -297,6 +295,9 @@ class Application(Tk):
 
         self.Button_deco.place_forget()        
         self.Button_retour.place_forget()
+        self.page_prod_frame.place_forget()
+        self.page_log_frame.place_forget()
+        self.pageAdmin()
 
         self.login_page()
 
@@ -357,6 +358,64 @@ class Application(Tk):
         self.stock_entry.delete(0, 'end')
         self.stock_entry.insert(0, "")
 
+        # Ajoutez les données triées à la Treeview
+        for item in data:
+            self.tree.insert("", "end", values=item)
+ 
+    def modif_stock(self):
+        # Création du rectangle pour entrer le nombre d'articles
+        self.entry_frame = Tk.Frame(self.master)
+        self.entry_label = Tk.Label(self.entry_frame, text="Ajustement stock:")
+        self.entry_label.grid(row=0, column=0, padx=5, pady=5)
+ 
+        self.num_articles_entry = Tk.Entry(self.entry_frame)
+        self.num_articles_entry.grid(row=0, column=1, padx=5, pady=5)
+ 
+        # Création du bouton Valider
+        self.validate_button = Tk.Button(self.entry_frame, text="Valider", command=self.validate)
+        self.validate_button.grid(row=0, column=2, padx=5, pady=5, sticky="e")
+ 
+        self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+ 
+ 
+ 
+        self.stock_entry = Entry(self)
+        self.stock_entry.grid(row=3, column=1, padx=5, pady=5)
+ 
+        # Ajout du bouton Valider
+        self.validate_stock_button = Button(self, text="Valider", command=self.update_stock)
+        self.validate_stock_button.grid(row=3, column=2, padx=5, pady=5, sticky="e")
+
+    def affichage_tableau_prod(self):
+        # Utiliser l'instance de la classe ERP
+        self.erp.obtenir_informations_ordres_fabrication()
+ 
+        # Afficher les valeurs récupérées pour le débogage
+        print("Ordre fabrication:", self.erp.ordres_fabrication)
+        print("Date ordre fabrication:", self.erp.dates_ordres_fabrication)
+        print("Quantité à produire:", self.erp.quantite_a_produire)
+        print("Quantité en production:", self.erp.qty_producing)
+ 
+        # Effacer les éléments existants dans la Treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+ 
+        # Ajouter les nouvelles données obtenues à la Treeview
+        for i in range(len(self.erp.ordres_fabrication)):
+            # Utiliser anchor pour centrer le texte
+            self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
+                                                self.erp.qty_producing[i], self.erp.quantite_a_produire[i]))
+ 
+    def update_table(self):
+        # Effacer les éléments existants dans la Treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+ 
+        # Ajouter les nouvelles données obtenues à la Treeview après mise à jour
+        for i in range(len(self.erp_instance.ordres_fabrication)):
+            self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
+                                                self.erp.quantite_a_produire[i], self.erp.qty_producing[i]))
+ 
     def sort_column_log(self, col):
         # Obtenez l'état actuel du tri pour la colonne spécifiée
         reverse = self.sort_order[col]
