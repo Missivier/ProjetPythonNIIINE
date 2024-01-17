@@ -1,12 +1,14 @@
 import sys
 sys.path.insert(0,'odoo')
 from intregration import ERP
+from PIL import Image, ImageTk
  
-from tkinter import Tk, Label, Entry, Button, Frame, messagebox, ttk
+from tkinter import Tk, Label, Entry, Button, Frame, ttk
 import tkinter as tk
  
  
 class Application(Tk):
+    #Création de l'environnement
     def __init__(self):
         super().__init__()
  
@@ -15,16 +17,36 @@ class Application(Tk):
         self.entry_password = tk.StringVar()
 
         #Creation de la page Client
-        self.title("Application CyberVest")
-        self.screen_width = self.winfo_screenwidth()
-        self.screen_height = self.winfo_screenheight()
-        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
+        self.title("Application CyberVest")#Titre
+        self.screen_width = self.winfo_screenwidth()#Largeur fenetre
+        self.screen_height = self.winfo_screenheight()#Longueur fenetre
+        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")#Equation des L*l
+
+        # Creation Background fentre client
         self.background_frame = Frame(self, bg="#DAD7D7")
         self.background_frame.place(relwidth=1, relheight=1)
+
+        # Création d'un Canvas pour l'image de fond
+        self.canvas = tk.Canvas(self.background_frame, width=self.screen_width, height=self.screen_height)
+        self.canvas.pack()
+
+        # Charger l'image de fond
+        background_image = Image.open("/home/user/Documents/ProjetPythonNIIINE/Application_client/Image/v915-wit-011.jpg")
+        background_image = ImageTk.PhotoImage(background_image)
+
+        # Ajouter l'image au Canvas
+        self.canvas.create_image(0, 0, image=background_image)
+
  
         # Création d'un bouton pour quitter l'application
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
+
+        #Creation bouton déco
+        self.Button_deco = tk.Button(self, text="Deconnexion",fg="black", bg="#DAD7D7", font=("Arial", 12), command=self.deconnexion)
+
+        #Creation bouton pour aller retourner menu admin
+        self.Button_retour = tk.Button(self, text="Retour",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
 
         #connexion à L'ERP
         self.erp = ERP("db_cybervest")
@@ -68,7 +90,7 @@ class Application(Tk):
 
     #Creation de la page Production
     def pageProd(self):
- 
+        self.Number_page == 2
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
         #Création de la page
@@ -101,23 +123,22 @@ class Application(Tk):
         # Ajouter un bouton pour activer la modification du stock
        # self.modify_stock_button = Button(self, text="Modifier", command=self.modif_stock)
         #self.modify_stock_button.pack(pady=10)
+
  
     #Creation de la page Logistique
     def pageLog(self, master=None):
- 
+        self.Number_page == 2
         # Supprime les widgets de la page de connexion
-        self.login_frame.grid_forget()
-         # Supprime le bouton Quitter
-        self.bouton_quit.grid_forget()
- 
+        self.login_frame.place_forget()
+
         self.page_log_frame = tk.Frame(self)
         self.page_log_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
  
-        self.label = Label(self, text="Logistique", font=('Helvetica', 24))
+        self.label = Label(self.page_log_frame, text="Logistique", font=('Helvetica', 24))
         self.label.pack(pady=10)
  
         # Création de la grille pour afficher les articles
-        self.tree = ttk.Treeview(self, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
+        self.tree = ttk.Treeview(self.page_log_frame, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
  
         # Configuration des en-têtes de colonnes
         self.tree.heading("Nom", text="Nom", command=lambda: self.sort_column_log("Nom", False))
@@ -161,22 +182,20 @@ class Application(Tk):
  
     #Création de la page Admin
     def pageAdmin(self):
- 
+        self.Number_page = 1
         # Supprime les widgets de la page de connexion
         self.login_frame.place_forget()
+
         #Création de la page
         self.page_admin_frame = tk.Frame(self,bg="#DAD7D7")
-        self.page_admin_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
+        self.page_admin_frame.place(relx=0, rely=0.1, relwidth=1, relheight=0.8)
         #Creation bouton pour aller page prod
-        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Boutton_retour()])
+        self.Button_prod = tk.Button(self.page_admin_frame, text="Production",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageProd(), self.Bouton_retour()])
         self.Button_prod.place(relx=0.3, rely=0.5, anchor="center")
         #Creation bouton pour aller page logistique
-        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Boutton_retour()])
-        self.Button_logis.place(relx=0.5, rely=0.5, anchor="center")
-        #Creation bouton pour aller page commerce
-        self.Button_commerce = tk.Button(self.page_admin_frame, text="Commerce",fg="black", bg="#DAD7D7", font=("Arial", 20),command=lambda: [self.pageVente(), self.Boutton_retour()])
-        self.Button_commerce.place(relx=0.7, rely=0.5, anchor="center")
-
+        self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Bouton_retour()])
+        self.Button_logis.place(relx=0.7, rely=0.5, anchor="center")
+        '''
         # Configuration des en-têtes de colonnes
         columns = ("Nom", "Prix", "Référence Interne", "Stock Disponible")
         for col in columns:
@@ -193,19 +212,36 @@ class Application(Tk):
         # Ajout du bouton Valider
         self.validate_stock_button = tk.Button(self.page_log_frame, text="Valider", command=self.update_stock_log)
         self.validate_stock_button.place(relx=0.535, rely=0.405, anchor='center')
-
+        '''
     # Creation et gestion bouton retour
-    def Boutton_retour(self):
-        #Creation bouton pour aller retourner menu admin
-        self.Button_retour = tk.Button(self, text="Retour",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
-        self.Button_retour.place(relx=0.1, rely=0.9, anchor="sw")
-    
+    def Bouton_retour(self):
+        self.Button_retour.place(relx=0, rely=1, anchor="sw")
     def Retour(self):
         #Fonction pour revenir sur le menu admin
         self.Button_retour.place_forget()
         self.page_prod_frame.place_forget()
         self.page_log_frame.place_forget()
         self.pageAdmin()
+
+    # Création et fonction bouton déco
+    def show_button_deconnexion(self):
+        self.Button_deco.place(relx=0.92, rely=0.03)
+
+    def deconnexion(self):
+        if self.Number_page == 1:
+            self.page_admin_frame.place_forget()
+        elif self.Number_page == 2:
+            self.page_prod_frame.place_forget()
+        elif  self.Number_page == 3:     
+            self.page_log_frame.place_forget() 
+
+        self.Button_deco.place_forget()        
+        self.Button_retour.place_forget()
+        self.page_prod_frame.place_forget()
+        self.page_log_frame.place_forget()
+        self.pageAdmin()
+
+        self.login_page()
 
     def affichage_tableau_log(self):
         # Utiliser l'instance de la classe ERP
