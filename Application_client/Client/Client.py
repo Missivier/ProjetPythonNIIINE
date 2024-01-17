@@ -5,55 +5,64 @@ from PIL import Image, ImageTk
  
 from tkinter import Tk, Label, Entry, Button, Frame, ttk
 import tkinter as tk
- 
- 
-class Application(Tk):
-    #Création de l'environnement
+
+class Application(tk.Tk):
     def __init__(self):
         super().__init__()
- 
-        # Créer les variables d'entrée
+
         self.entry_username = tk.StringVar()
         self.entry_password = tk.StringVar()
 
-        #Creation de la page Client
-        self.title("Application CyberVest")#Titre
-        self.screen_width = self.winfo_screenwidth()#Largeur fenetre
-        self.screen_height = self.winfo_screenheight()#Longueur fenetre
-        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")#Equation des L*l
+        self.title("Application CyberVest")
+        self.screen_width = self.winfo_screenwidth()
+        self.screen_height = self.winfo_screenheight()
+        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
 
-        # Creation Background fentre client
-        self.background_frame = Frame(self, bg="#DAD7D7")
-        self.background_frame.place(relwidth=1, relheight=1)
+        chemin_image_jpg = "/home/user/Documents/ProjetPythonNIIINE/Application_client/Login/v915-wit-011.png"
+        image_pil = Image.open(chemin_image_jpg)
+        self.image_tk = ImageTk.PhotoImage(image_pil)
 
-        # Création d'un Canvas pour l'image de fond
-        self.canvas = tk.Canvas(self.background_frame, width=self.screen_width, height=self.screen_height)
-        self.canvas.pack()
+        self.canvas = tk.Canvas(self, width=self.image_tk.width(), height=self.image_tk.height())
+        self.canvas.pack(expand=tk.YES, fill=tk.BOTH)
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.image_tk)
 
-        # Charger l'image de fond
-        background_image = Image.open("/home/user/Documents/ProjetPythonNIIINE/Application_client/Image/v915-wit-011.jpg")
-        background_image = ImageTk.PhotoImage(background_image)
+        self.bind("<Configure>", self.redimensionner_image)
 
-        # Ajouter l'image au Canvas
-        self.canvas.create_image(0, 0, image=background_image)
+        self.bouton_quit = tk.Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
+        self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)
 
- 
-        # Création d'un bouton pour quitter l'application
-        self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
-        self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
+        self.Button_deco = tk.Button(self, text="Deconnexion", fg="black", bg="#DAD7D7", font=("Arial", 12), command=self.deconnexion)
+        self.Button_retour = tk.Button(self, text="Retour", fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
 
-        #Creation bouton déco
-        self.Button_deco = tk.Button(self, text="Deconnexion",fg="black", bg="#DAD7D7", font=("Arial", 12), command=self.deconnexion)
-
-        #Creation bouton pour aller retourner menu admin
-        self.Button_retour = tk.Button(self, text="Retour",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
-
-        #connexion à L'ERP
         self.erp = ERP("db_cybervest")
 
-        #Afficher La page de login
         self.login_page()
-#--------------------------------------------------------------------------------------------------------------------------------------------
+
+    def redimensionner_image(self, event):
+        nouvelle_largeur = event.width
+        nouvelle_hauteur = event.height
+        
+        # Calcul des facteurs de zoom
+        facteur_zoom_x = nouvelle_largeur / self.image_tk.width()
+        facteur_zoom_y = nouvelle_hauteur / self.image_tk.height()
+
+        # Redimensionnement de l'image
+        image_redimensionnee = self.image_tk.subsample(int(facteur_zoom_x), int(facteur_zoom_y))
+
+        # Création d'une nouvelle image Tkinter
+        nouvelle_image_tk = ImageTk.PhotoImage(image_redimensionnee)
+
+        # Configuration du Canvas avec la nouvelle taille
+        self.canvas.config(width=nouvelle_largeur, height=nouvelle_hauteur)
+
+        # Affichage de la nouvelle image
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=nouvelle_image_tk)
+
+        # Mise à jour de la référence à l'image pour éviter la suppression
+        self.canvas.image = nouvelle_image_tk
+
+
+
     #Fonction Login
     def login(self):
         # Gestion des connexions valides et faire appparaitre la page en conséquence
