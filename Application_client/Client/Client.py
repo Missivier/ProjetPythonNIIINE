@@ -15,11 +15,10 @@ class Application(Tk):
     
     def __init__(self):
         super().__init__()
- 
-        # Créer les variables d'entrée
+
         self.entry_username = tk.StringVar()
         self.entry_password = tk.StringVar()
- 
+
         #Creation de la page Client
         self.title("Application CyberVest")#Titre
         self.screen_width = self.winfo_screenwidth()#Largeur fenetre
@@ -34,6 +33,14 @@ class Application(Tk):
         self.canvas = tk.Canvas(self.background_frame, width=self.screen_width, height=self.screen_height)
         self.canvas.pack()
 
+        # Charger l'image de fond
+        background_image = Image.open("/home/user/Documents/ProjetPythonNIIINE/Application_client/Image/v915-wit-011.jpg")
+        background_image = ImageTk.PhotoImage(background_image)
+
+        # Ajouter l'image au Canvas
+        self.canvas.create_image(0, 0, image=background_image)
+
+ 
         # Création d'un bouton pour quitter l'application
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
         self.bouton_quit.pack(side="bottom", anchor="se", pady=10, padx=10)  # Positionne le bouton en bas à droite
@@ -44,35 +51,11 @@ class Application(Tk):
         #Creation bouton pour aller retourner menu admin
         self.Button_retour = tk.Button(self, text="Retour",fg="black", bg="#DAD7D7", font=("Arial", 20), command=self.Retour)
 
-        #connexion à L'ERP
         self.erp = ERP("db_cybervest")
- 
+
         #Afficher La page de login
         self.login_page()
- 
-#----------------------------------------------------------------------------------------------------
-#     Gestion USER
-#----------------------------------------------------------------------------------------------------
-        
-    def connexion(self):
-        # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
-        if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
-            self.pageProd()
-        elif self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 6:
-            self.pageAdmin()
- 
-        else:
-            self.pageLog()
-
-    def deconnexion(self) :
-        self.erp.deconnexion()
-
-#----------------------------------------------------------------------------------------------------
-#     Méthodes page LOGIN
-#----------------------------------------------------------------------------------------------------
- 
 #--------------------------------------------------------------------------------------------------------------------------------------------
-
     #Fonction Login
     def login(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
