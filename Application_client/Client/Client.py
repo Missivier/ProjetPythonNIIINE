@@ -32,14 +32,6 @@ class Application(Tk):
         # Création d'un Canvas pour l'image de fond
         self.canvas = tk.Canvas(self.background_frame, width=self.screen_width, height=self.screen_height)
         self.canvas.pack()
-
-        # Charger l'image de fond
-        background_image = Image.open("/home/user/Documents/ProjetPythonNIIINE/Application_client/Image/v915-wit-011.jpg")
-        background_image = ImageTk.PhotoImage(background_image)
-
-        # Ajouter l'image au Canvas
-        self.canvas.create_image(0, 0, image=background_image)
-
  
         # Création d'un bouton pour quitter l'application
         self.bouton_quit = Button(self, text="Quitter", fg="#296EDF", bg="#DAD7D7", font=("Arial", 20), command=self.destroy)
@@ -57,7 +49,7 @@ class Application(Tk):
         self.login_page()
 #--------------------------------------------------------------------------------------------------------------------------------------------
     #Fonction Login
-    def login(self):
+    def connexion(self):
         # Créer l'instance de la classe ERP ici, après que l'utilisateur ait cliqué sur le bouton de connexion.
         if self.erp.connexion( self.entry_username.get(), self.entry_password.get()) == 2 :
             self.pageProd()
@@ -402,7 +394,7 @@ class Application(Tk):
         self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
    
-     def update_stock_prod(self):
+    def update_stock_prod(self):
         # Récupération de la quantité saisie dans la case d'entrée
         quantite = self.stock_entry.get()
 
