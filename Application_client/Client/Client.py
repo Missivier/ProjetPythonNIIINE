@@ -1,7 +1,8 @@
+import io
 import sys
 sys.path.insert(0,'odoo')
 from intregration import ERP
-from PIL import Image
+from PIL import Image, ImageTk
 from tkinter import Tk, Label, Entry, Button, Frame, ttk
 import tkinter as tk
  
@@ -157,20 +158,21 @@ class Application(Tk):
 #     Méthodes page LOGISTIQUE
 #----------------------------------------------------------------------------------------------------
 
-    #Creation de la page Logistique
     def pageLog(self, master=None):
-        #self.Number_page == 2
+ 
         # Supprime les widgets de la page de connexion
-        self.login_frame.place_forget()
-
+        self.login_frame.grid_forget()
+         # Supprime le bouton Quitter
+        self.bouton_quit.grid_forget()
+ 
         self.page_log_frame = tk.Frame(self)
         self.page_log_frame.place(relx=0, rely=0, relwidth=1, relheight=0.9)
  
-        self.label = Label(self.page_log_frame, text="Logistique", font=('Helvetica', 24))
+        self.label = Label(self, text="Logistique", font=('Helvetica', 24))
         self.label.pack(pady=10)
  
         # Création de la grille pour afficher les articles
-        self.tree = ttk.Treeview(self.page_log_frame, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
+        self.tree = ttk.Treeview(self, columns=("Nom", "Prix", "Référence Interne", "Stock Disponible"), show="headings")
  
         # Configuration des en-têtes de colonnes
         self.tree.heading("Nom", text="Nom", command=lambda: self.sort_column_log("Nom", False))
@@ -189,6 +191,8 @@ class Application(Tk):
         # Appeler la méthode pour obtenir les informations des produits et afficher le tableau
         self.affichage_tableau_log()
  
+        # Binding de l'événement de clic
+        self.tree.bind("<ButtonRelease-1>", self.show_image_log)
  
         # Ajoutez la variable self.sort_order pour suivre l'état du tri (ascendant ou descendant)
         self.sort_order = {}
@@ -293,37 +297,14 @@ class Application(Tk):
         # Mise à jour du stock dans Odoo
         self.erp.modifier_stock_odoo(reference_interne, nouvelle_quantite)
 
+        # Mise à jour de la ligne sélectionnée dans le tableau
+        self.tree.item(item_selectionne, values=(details_element['values'][0], details_element['values'][1], reference_interne, nouvelle_quantite))
+
         # Effacement de la case d'entrée et du bouton Valider après la mise à jour
         self.stock_entry.delete(0, 'end')
         self.stock_entry.insert(0, "")
 
-        # Ajoutez les données triées à la Treeview
-        for item in data:
-            self.tree.insert("", "end", values=item)
- 
-    def modif_stock(self):
-        # Création du rectangle pour entrer le nombre d'articles
-        self.entry_frame = Tk.Frame(self.master)
-        self.entry_label = Tk.Label(self.entry_frame, text="Ajustement stock:")
-        self.entry_label.grid(row=0, column=0, padx=5, pady=5)
- 
-        self.num_articles_entry = Tk.Entry(self.entry_frame)
-        self.num_articles_entry.grid(row=0, column=1, padx=5, pady=5)
- 
-        # Création du bouton Valider
-        self.validate_button = Tk.Button(self.entry_frame, text="Valider", command=self.validate)
-        self.validate_button.grid(row=0, column=2, padx=5, pady=5, sticky="e")
- 
-        self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
- 
- 
- 
-        self.stock_entry = Entry(self)
-        self.stock_entry.grid(row=3, column=1, padx=5, pady=5)
- 
-        # Ajout du bouton Valider
-        self.validate_stock_button = Button(self, text="Valider", command=self.update_stock)
-        self.validate_stock_button.grid(row=3, column=2, padx=5, pady=5, sticky="e")
+        
 
     def affichage_tableau_prod(self):
         # Utiliser l'instance de la classe ERP
@@ -377,22 +358,6 @@ class Application(Tk):
         # Ajoutez les données triées à la Treeview
         for item in data:
             self.tree.insert("", "end", values=item)
-
-    def modif_stock_log(self):
-        # Création du rectangle pour entrer le nombre d'articles
-        self.entry_frame = Tk.Frame(self.master)
-        self.entry_label = Tk.Label(self.entry_frame, text="Ajustement stock:")
-        self.entry_label.grid(row=0, column=0, padx=5, pady=5)
- 
-        self.num_articles_entry = Tk.Entry(self.entry_frame)
-        self.num_articles_entry.grid(row=0, column=1, padx=5, pady=5)
- 
-        # Création du bouton Valider
-        self.validate_button = Tk.Button(self.entry_frame, text="Valider", command=self.validate)
-        self.validate_button.grid(row=0, column=2, padx=5, pady=5, sticky="e")
- 
-        self.entry_frame.grid(row=1, column=0, padx=10, pady=10, sticky="w")
-
    
     def update_stock_prod(self):
         # Récupération de la quantité saisie dans la case d'entrée
@@ -435,6 +400,7 @@ class Application(Tk):
 #----------------------------------------------------------------------------------------------------
 #     Méthodes page ADMIN
 #----------------------------------------------------------------------------------------------------
+        
 #Création de la page Admin
     def pageAdmin(self):
         #self.Number_page = 1
@@ -450,6 +416,7 @@ class Application(Tk):
         #Creation bouton pour aller page logistique
         self.Button_logis = tk.Button(self.page_admin_frame, text="Logistique",fg="black", bg="#DAD7D7", font=("Arial", 20), command=lambda: [self.pageLog(), self.Bouton_retour()])
         self.Button_logis.place(relx=0.7, rely=0.5, anchor="center")
+
 #----------------------------------------------------------------------------------------------------
 #     Méthodes gestion des BOUTONS
 #----------------------------------------------------------------------------------------------------
@@ -474,6 +441,44 @@ class Application(Tk):
             self.tree.insert("", "end", values=(self.erp.ordres_fabrication[i], self.erp.dates_ordres_fabrication[i],
                                                 self.erp.quantite_a_produire[i], self.erp.qty_producing[i]))
 
+
+    def show_image_log(self, event):
+        print("Méthode show_image_log appelée.")
+        
+        item = self.tree.selection()[0]
+        article_name = self.tree.item(item, "values")[0]
+        print("Article sélectionné:", article_name)
+ 
+        # Assurez-vous que les informations des produits sont à jour
+        self.erp.obtenir_photos_produits()
+ 
+        article_index = self.get_article_index_log(article_name)
+ 
+        # Récupérer l'image directement depuis Odoo
+        image_data = self.erp.images_stock[article_index]
+ 
+        # Supprimer tous les widgets
+        for widget in self.page_log_frame.grid_slaves():
+            widget.destroy()
+ 
+        if image_data:
+            img = Image.open(io.BytesIO(image_data))
+             # Redimensionner l'image (ajustez la taille selon vos besoins)
+            resized_img = img.resize((400, 400), Image.BILINEAR)
+            # Convertir l'image redimensionnée en ImageTk.PhotoImage
+            img = ImageTk.PhotoImage(resized_img)
+ 
+            # Afficher l'image dans un Label
+            image_label = Label(self.page_log_frame, image=img)
+            image_label.photo = img
+            image_label.place(relx=0.6, rely=0)
+ 
+                
+    def get_article_index_log(self, article_name):
+        for i, article in enumerate(self.erp.articles_log):
+            if article["name"] == article_name:
+                return i
+        return -1  # Retourne -1 si l'article n'est pas trouvé
 #----------------------------------------------------------------------------------------------------
 #     APPLICATION
 #---------------------------------------------------------------------------------------------------- 

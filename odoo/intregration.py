@@ -96,6 +96,22 @@ class ERP:
         else:
             print('Échec de la connexion à Odoo.')
 
+    def obtenir_photos_produits(self):
+        product_ids = self.models.execute_kw(
+            self.db_name, self.uid, self.password,
+            'product.product', 'search', [[]], {}
+        )
+        products = self.models.execute_kw(
+            self.db_name, self.uid, self.password,
+            'product.product', 'read', [product_ids],
+            {'fields': ['name', 'image_1920']}
+        )
+ 
+        # Mettre à jour la liste des articles avec les noms des produits et les images
+        self.articles_log = [{'name': product['name'], 'image': product['image_1920']} for product in products]
+ 
+        # Mettre à jour la liste des images_stock avec les images des produits
+        self.images_stock = [product['image_1920'] and base64.b64decode(product['image_1920']) for product in products]
 #----------------------------------------------------------------------------------------------------
 #     Méthodes WRITE
 #----------------------------------------------------------------------------------------------------
@@ -127,7 +143,7 @@ class ERP:
         else:
             print('Échec de la connexion à Odoo.')
  
-    def modifier_quantite_en_cours_production(self, ordre_fabrication, new_qty_producing):
+    def modifier_prod_quantite(self, ordre_fabrication, new_qty_producing):
         if self.uid:
             mo_id = self.models.execute_kw(
                 self.db_name, self.uid, self.password,
